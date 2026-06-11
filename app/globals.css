@@ -1,0 +1,86 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --font-body: var(--font-inter);
+  --font-display: var(--font-cormorant);
+  --color-primary-lighter: #b0b0b0;
+  --color-primary-light: #ededed;
+  --color-primary: #ffffff;
+  --color-body: #4a5565;
+  --color-secondary-lighter: #393939;
+  --color-secondary-light: #1f1f1f;
+  --color-secondary: #0a0a0a;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+    --color-body: #99a1af;
+    --color-primary: #0a0a0a;
+    --color-primary-light: #191919;
+    --color-primary-lighter: #ffffff;
+    --color-secondary-lighter: #e5e5e5;
+    --color-secondary-light: #d3d3d3;
+    --color-secondary: #ffffff;
+  }
+}
+
+* {
+  font-family: var(--font-body), sans-serif;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display), serif;
+}
+
+button {
+  cursor: pointer;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary-lighter: var(--color-primary-lighter);
+  --color-primary: var(--color-primary);
+  --color-body: var(--color-body);
+  --color-primary-light: var(--color-primary-light);
+  --color-secondary-lighter: var(--color-secondary-lighter);
+  --color-secondary-light: var(--color-secondary-light);
+  --color-secondary: var(--color-secondary);
+  --font-sans: var(--font-inter);
+  --font-serif: var(--font-cormorant);
+}
+
+@utility button-primary {
+  @apply text-primary border text-sm border-secondary bg-secondary py-2 px-4 rounded-full font-medium text-sm transition-colors;
+
+  &:hover {
+    @apply border-secondary-lighter bg-secondary-light;
+  }
+}
+
+@utility button-secondary {
+  @apply border-primary-lighter/50 border text-sm py-2 px-4 rounded-full font-medium text-sm transition-colors;
+
+  &:hover {
+    @apply border-primary-lighter bg-primary-light;
+  }
+}
+
+@utility link {
+  @apply text-body text-sm transition-colors;
+
+  &:hover {
+    @apply text-secondary;
+  }
+}
