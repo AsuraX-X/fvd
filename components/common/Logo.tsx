@@ -6,7 +6,7 @@ const Logo = () => {
   const isDark = useDarkMode();
 
   return (
-    <div className="relative flex w-32 aspect-9/4 shrink-0">
+    <div className="relative w-32 aspect-185/101 shrink-0">
       <Image
         src={isDark ? "/logo/FVD-LGOa-inverted.png" : "/logo/FVD-LGOa.png"}
         alt="logo"
