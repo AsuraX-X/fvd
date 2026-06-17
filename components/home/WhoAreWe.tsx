@@ -7,12 +7,10 @@ const WhoAreWe = () => {
 
   return (
     <section className="py-20 bg-primary-light">
-      <div className="max-w-7xl flex justify-between w-full mx-auto">
+      <div className="flex justify-between w-full px-8 mx-auto max-w-7xl">
         <div className="space-y-8">
           <div className="pb-12 border-b border-primary-lighter/10">
-            <p className="uppercase mb-6 text-sm text-body/90 tracking-widest">
-              Who are we
-            </p>
+            <p className="small-header">Who are we</p>
             <h2 className="mb-12 text-5xl font-medium font-body!">
               A behavior, not just a studio.
             </h2>
@@ -29,12 +27,12 @@ const WhoAreWe = () => {
               </p>
             </div>
           </div>
-          <div className="flex">
+          <div className="flex lg:flex-row flex-col gap-4">
             <div className="w-full">
               <h3 className="mb-3 font-medium text-sm font-body!">
                 Strategic Core
               </h3>
-              <ul className="text-sm list-disc list-inside text-body space-y-2">
+              <ul className="space-y-2 text-sm list-disc list-inside text-body">
                 <li>Develop brand persona</li>
                 <li>Create memorable stories</li>
                 <li>Distinct & Unique</li>
@@ -44,7 +42,7 @@ const WhoAreWe = () => {
               <h3 className="mb-3 font-medium text-sm font-body!">
                 Creative Art
               </h3>
-              <ul className="text-sm list-disc list-inside text-body space-y-2">
+              <ul className="space-y-2 text-sm list-disc list-inside text-body">
                 <li>Visual Identity</li>
                 <li>CGI Animation</li>
                 <li>Motion Graphics</li>
@@ -52,7 +50,7 @@ const WhoAreWe = () => {
             </div>
           </div>
         </div>
-        <div className="w-100 shrink-0">
+        <div className="hidden w-100 lg:block shrink-0">
           <Image
             src={
               isDark ? "/home/sculpture-dark.png" : "/home/sculpture-white.png"
@@ -60,7 +58,7 @@ const WhoAreWe = () => {
             width={640}
             height={960}
             alt="sculpture"
-            className="rounded-2xl border border-primary-lighter/10"
+            className="border rounded-2xl border-primary-lighter/10"
           />
         </div>
       </div>
