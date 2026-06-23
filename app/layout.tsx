@@ -1,12 +1,12 @@
 import Footer from "@/components/common/Footer";
 import Header from "@/components/common/Header";
-import { Cormorant_Garamond, Inter } from "next/font/google";
+import { Cormorant_Garamond, Montserrat } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({
+const montserrat = Montserrat({
   subsets: ["latin"],
   weight: ["300", "400", "600"],
-  variable: "--font-inter",
+  variable: "--font-montserrat",
   display: "swap",
 });
 
@@ -24,7 +24,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${cormorant.variable}`}>
+    <html lang="en" className={`${montserrat.variable} ${cormorant.variable}`}>
       <body>
         <Header />
         {children}

@@ -4,8 +4,13 @@ import Image from "next/image";
 const ExpertCard = () => {
   return (
     <div className="w-full cursor-pointer bg-primary-light space-y-4 p-4 rounded-2xl">
-      <div className="relative w-full bg-gray-600 rounded-xl h-50">
-        <Image src={""} alt="expert" fill />
+      <div className="relative w-full aspect-video overflow-hidden bg-gray-600 rounded-xl">
+        <Image
+          src={"https://placehold.co/160x90"}
+          className=""
+          alt="expert"
+          fill
+        />
       </div>
       <div className="flex items-center justify-between">
         <div className="flex gap-2 items-center">

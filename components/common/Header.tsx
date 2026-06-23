@@ -1,9 +1,9 @@
 "use client";
 import { links } from "@/constants";
+import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { authClient } from "@/lib/auth-client";
 import Logo from "./Logo";
 import MobileHeader from "./MobileHeader";
 
@@ -65,6 +65,7 @@ const Header = () => {
           {user ? (
             <div className="rounded-full size-10 bg-gray-600 relative overflow-hidden text-white font-semibold flex items-center justify-center">
               {user.image ? (
+                // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={user.image}
                   alt="profile image"

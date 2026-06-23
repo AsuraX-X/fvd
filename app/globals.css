@@ -3,7 +3,7 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
-  --font-body: var(--font-inter);
+  --font-body: var(--font-montserrat);
   --font-display: var(--font-cormorant);
   --color-primary-lighter: #b0b0b0;
   --color-primary-light: #ededed;
