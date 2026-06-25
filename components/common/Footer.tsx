@@ -6,7 +6,7 @@ const Footer = () => {
   return (
     <section className="border-t border-t-primary-light ">
       <div className="px-8 mx-auto max-w-7xl">
-        <div className="flex flex-col justify-between gap-12 py-20 border-b lg:gap-0 lg:flex-row border-b-primary-light ">
+        <div className="flex flex-col justify-between gap-12 py-15 border-b lg:gap-0 lg:flex-row border-b-primary-light ">
           <div className="space-y-6">
             <Logo />
             <p className="text-sm leading-6 text-body max-w-[40ch]">
@@ -48,7 +48,7 @@ const Footer = () => {
           <p className="order-2 text-xs text-body/60">
             © 2026 FVDlance Creative Agency. All rights reserved.
           </p>
-          <ul className="flex order-1 gap-4 text-sm lg:order-2 w-fit text-body">
+          <ul className="flex order-1 gap-4 text-sm lg:order-2 lg:w-fit w-full text-body">
             {social.map(({ label, link }) => (
               <li key={label}>
                 <a href={link}>{label}</a>

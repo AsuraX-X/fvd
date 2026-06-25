@@ -86,7 +86,7 @@ button {
 }
 
 @utility font-body {
-  @apply font-[font-body];
+  @apply font-sans;
 }
 
 @utility small-header {

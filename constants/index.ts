@@ -14,3 +14,16 @@ export const social = [
   { label: "LinkedIn", link: "" },
   { label: "X (Twitter)", link: "" },
 ];
+export const strats = [
+  "Visual Identity Guide",
+  "Illustration",
+  "Storyboard",
+  "Animation & Motion Graphics",
+  "CGI Design & Animation",
+];
+export const prods = [
+  "Experiential Campaign",
+  "Experiential Activation",
+  "Direction & Editorial",
+  "Post Production & Finishing",
+];

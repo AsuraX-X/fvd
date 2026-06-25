@@ -34,8 +34,8 @@ const ExpertCard = () => {
         </div>
       </div>
       <div className="flex gap-2">
-        <button className="w-full button-primary">Message</button>
-        <button className="button-secondary w-full">View profile</button>
+        <button className="w-full text-xs font-bold button-primary">Message</button>
+        <button className="button-secondary text-xs font-bold w-full">View profile</button>
       </div>
     </div>
   );

@@ -14,8 +14,8 @@ const ExpertCard = () => {
       </div>
       <div className="flex items-center justify-between">
         <div className="flex gap-2 items-center">
-          <div className="relative rounded-full bg-gray-300 size-12">
-            <Image src={""} alt="expert-picture" fill />
+          <div className="relative overflow-hidden rounded-full bg-gray-300 size-12">
+            <Image src={"https://placehold.co/12x12"} alt="expert-picture" fill />
           </div>
           <div>
             <h4 className="text-sm">Sarah Jenkins</h4>
