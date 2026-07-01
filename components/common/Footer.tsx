@@ -5,7 +5,7 @@ import Logo from "./Logo";
 const Footer = () => {
   return (
     <section className="border-t border-t-primary-light ">
-      <div className="px-8 mx-auto max-w-7xl">
+      <div className=" mx-auto max-w-7xl">
         <div className="flex flex-col justify-between gap-12 py-15 border-b lg:gap-0 lg:flex-row border-b-primary-light ">
           <div className="space-y-6">
             <Logo />

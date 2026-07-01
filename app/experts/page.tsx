@@ -1,6 +1,14 @@
 import ExpertGrid from "@/components/experts/ExpertGrid";
 import ApplyBtn from "@/components/home/ApplyBtn";
 
+export const metadata = {
+  title: "Experts — FVD Directory",
+  description: "Browse curated experts for creative, design, and production services.",
+  alternates: { canonical: "/experts" },
+  openGraph: { title: "Experts — FVD", description: "Browse curated experts", url: "/experts", images: ["/home/hero.png"] },
+  twitter: { card: "summary_large_image", images: ["/home/hero.png"] },
+};
+
 const page = () => {
   return (
     <main className="py-50 px-8  max-w-7xl mx-auto">

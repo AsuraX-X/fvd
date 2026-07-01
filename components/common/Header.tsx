@@ -37,8 +37,8 @@ const Header = () => {
   }, []);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-10 ">
-      <div className="items-center justify-between hidden py-3 border-b lg:flex px-30 border-b-primary-light bg-primary/40 backdrop-blur-xl">
+    <nav className="fixed top-0 left-0 py-4 right-0 px-8 z-10 border-b border-b-primary-light bg-primary/40 backdrop-blur-xl ">
+      <div className="items-center justify-between hidden  lg:flex max-w-7xl mx-auto ">
         <Link href={"/"}>
           <Logo />
         </Link>

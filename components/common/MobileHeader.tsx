@@ -63,7 +63,7 @@ const MobileHeader = () => {
   }, [closeMenu]);
 
   return (
-    <div className="flex items-center justify-between px-6 py-3 border-b lg:hidden border-b-primary-light bg-primary/70 backdrop-blur-2xl">
+    <div className="flex items-center justify-between px-6  lg:hidden">
       <Logo />
       <div>
         <button onClick={() => openMenu()}>

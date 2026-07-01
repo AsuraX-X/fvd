@@ -18,6 +18,20 @@ const cormorant = Cormorant_Garamond({
   display: "swap",
 });
 
+export const metadata = {
+  title: { default: "FVD", template: "%s | FVD" },
+  description: "FVD — creative studio activating brand value through sensory experiences.",
+  alternates: { canonical: "/" },
+  openGraph: {
+    siteName: "FVD",
+    images: ["/home/hero.png"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    creator: "@yourhandle",
+  },
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{

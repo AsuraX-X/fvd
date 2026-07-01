@@ -13,7 +13,6 @@ const ServicesContent = () => {
       </section>
       <section className="px-8 max-w-7xl mx-auto lg:py-24 md:py-20 py-16 gap-12 grid grid-cols-1 lg:grid-cols-2">
         <div className="space-y-6">
-          <p className="font-serif! text-3xl italic text-body/50">01</p>
           <h2 className="lg:text-5xl text-4xl font-body!">
             Strategy & Creative
           </h2>
@@ -34,7 +33,6 @@ const ServicesContent = () => {
               key={i}
             >
               <p className="text-2xl">{strat}</p>
-              <p className="font-mono! text-sm text-body/50">0{i + 1}</p>
             </li>
           ))}
         </ul>
@@ -42,7 +40,6 @@ const ServicesContent = () => {
       <section className="bg-primary-light">
         <div className="px-8 max-w-7xl mx-auto lg:pb-48 md:pb-30 pb-20  lg:py-24 md:py-20 py-16  gap-12 grid grid-cols-1 lg:grid-cols-2">
           <div className="space-y-6">
-            <p className="font-serif! text-3xl italic text-body/50">02</p>
             <h2 className="lg:text-5xl text-4xl font-body!">
               Production & Lifecycle
             </h2>
@@ -63,7 +60,6 @@ const ServicesContent = () => {
                 key={i}
               >
                 <p className="text-2xl">{prod}</p>
-                <p className="font-mono! text-sm text-body/50">0{i + 1}</p>
               </li>
             ))}
           </ul>
