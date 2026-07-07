@@ -1,22 +1,51 @@
 "use client";
-import { links } from "@/constants";
+import { links, UserProfile } from "@/constants";
 import { authClient } from "@/lib/auth-client";
+import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 import Logo from "./Logo";
 import MobileHeader from "./MobileHeader";
 
-type UserProfile = {
-  name?: string;
-  email?: string;
-  image?: string;
-};
+
 
 const Header = () => {
   const path = usePathname();
   const [user, setUser] = useState<UserProfile | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const router = useRouter();
+  const [signingOut, setSigningOut] = useState(false);
+
+  const handleSignOut = async () => {
+    setSigningOut(true);
+    try {
+      await fetch(`/api/auth/sign-out`, {
+        method: "POST",
+        credentials: "include",
+      });
+      // broadcast to other tabs using the same channel the library uses
+      try {
+        const payload = JSON.stringify({
+          event: "session",
+          data: { trigger: "signout" },
+          clientId: Math.random().toString(36).substring(7),
+          timestamp: Date.now(),
+        });
+        localStorage.setItem("better-auth.message", payload);
+      } catch (e) {
+        /* ignore */
+      }
+
+      setUser(null);
+      router.push("/");
+    } catch (error) {
+      console.error("Sign out failed", error);
+    } finally {
+      setSigningOut(false);
+    }
+  };
 
   useEffect(() => {
     const loadSession = async () => {
@@ -35,6 +64,30 @@ const Header = () => {
 
     loadSession();
   }, []);
+
+  const profileRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent | null) => {
+      // Check if the clicked element is NOT part of the ref target
+      if (!profileRef.current || !event) return;
+
+      const target = event.target;
+
+      // event.target is of type EventTarget | null; ensure it's a Node before calling contains
+      if (target instanceof Node && !profileRef.current.contains(target)) {
+        setIsOpen(false);
+      }
+    };
+
+    // Bind the event listener to the document
+    document.addEventListener("mousedown", handleClickOutside);
+
+    // Clean up the listener when the component unmounts
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [setIsOpen]);
 
   return (
     <nav className="fixed top-0 left-0 py-4 right-0 px-8 z-10 border-b border-b-primary-light bg-primary/40 backdrop-blur-xl ">
@@ -63,17 +116,90 @@ const Header = () => {
             </Link>
           ) : null}
           {user ? (
-            <div className="rounded-full size-10 bg-gray-600 relative overflow-hidden text-white font-semibold flex items-center justify-center">
+            <div
+              ref={profileRef}
+              onClick={() => setIsOpen(!isOpen)}
+              className="rounded-full size-10 cursor-pointer border border-secondary/0 hover:bg-secondary transition-colors bg-gray-600 relative text-white flex items-center justify-center"
+            >
               {user.image ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={user.image}
                   alt="profile image"
-                  className="absolute inset-0 h-full w-full object-cover"
+                  className="absolute rounded-full inset-0 h-full w-full object-cover"
                 />
               ) : (
-                <span>{(user.name || user.email || "U")[0].toUpperCase()}</span>
+                <span className=" font-semibold">
+                  {(user.name || user.email || "U")[0].toUpperCase()}
+                </span>
               )}
+              <AnimatePresence>
+                {isOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="bg-primary-light  overflow-hidden min-w-60 left-0 mt-4 pt-2 text-sm rounded-2xl absolute top-full"
+                  >
+                    <p className="text-body text-xs py-2 px-4 border-b border-b-secondary/20">
+                      {user.email}
+                    </p>
+                    <ul className="w-full">
+                      <li>
+                        <Link href={"/dashboard"}>
+                          <p className="py-3 w-full text-left px-4 hover:bg-secondary/10 transition-colors">
+                            Dashboard
+                          </p>
+                        </Link>
+                      </li>
+                      <li>
+                        <Link href={"/"}>
+                          <p className="py-3 w-full text-left px-4 hover:bg-secondary/10 transition-colors">
+                            Messages
+                          </p>
+                        </Link>
+                      </li>
+                      <li>
+                        <button
+                          type="button"
+                          onClick={handleSignOut}
+                          disabled={signingOut}
+                          aria-busy={signingOut}
+                          className={`py-3 w-full text-left px-4 hover:bg-secondary/10 transition-colors border-t border-t-secondary/20 ${signingOut ? "opacity-60 pointer-events-none" : ""}`}
+                        >
+                          {signingOut ? (
+                            <span className="flex items-center">
+                              <svg
+                                className="animate-spin -ml-1 mr-2 h-4 w-4 text-current"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                              >
+                                <circle
+                                  className="opacity-25"
+                                  cx="12"
+                                  cy="12"
+                                  r="10"
+                                  stroke="currentColor"
+                                  strokeWidth="4"
+                                />
+                                <path
+                                  className="opacity-75"
+                                  fill="currentColor"
+                                  d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                                />
+                              </svg>
+                              Signing out...
+                            </span>
+                          ) : (
+                            "Sign out"
+                          )}
+                        </button>
+                      </li>
+                    </ul>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           ) : null}
           <button className="button-primary">Work with us</button>

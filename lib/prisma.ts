@@ -10,3 +10,5 @@ export const prisma =
   });
 
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+// Note: Prisma client generated for this project does not expose `$use` middleware.
+// Profile creation is handled at the database level via a trigger (see migration).

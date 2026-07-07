@@ -12,6 +12,12 @@ datasource db {
   provider = "postgresql"
 }
 
+enum Role {
+  ADMIN  @map("admin")
+  EXPERT @map("expert")
+  USER   @map("user")
+}
+
 model User {
   id            String    @id
   name          String
@@ -22,9 +28,30 @@ model User {
   updatedAt     DateTime  @updatedAt
   sessions      Session[]
   accounts      Account[]
+  profile       Profile?
 
   @@unique([email])
   @@map("user")
+}
+
+model Profile {
+  id        String   @id
+  avatar    String?
+  email     String   @unique
+  firstName String
+  surname   String
+  location  String?
+  headline  String?
+  website   String?
+  bio       String?
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("profile")
 }
 
 model Session {

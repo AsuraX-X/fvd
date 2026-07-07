@@ -35,5 +35,14 @@ export const POST = async (req: Request) => {
   headers.set("Access-Control-Allow-Credentials", "true");
   headers.set("Vary", "Origin");
   headers.set("Access-Control-Expose-Headers", "Location");
+  try {
+    const url = new URL(req.url);
+    if (url.pathname.endsWith("/sign-out")) {
+      headers.set("X-Better-Auth-Event", "signout");
+    }
+  } catch (e) {
+    /* ignore */
+  }
+
   return new Response(res.body, { status: res.status, headers });
 };

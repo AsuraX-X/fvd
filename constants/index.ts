@@ -27,3 +27,10 @@ export const prods = [
   "Direction & Editorial",
   "Post Production & Finishing",
 ];
+
+
+export type UserProfile = {
+  name?: string;
+  email?: string;
+  image?: string;
+};
