@@ -4,6 +4,12 @@ export const links = [
   { label: "Services", link: "/services" },
   { label: "About", link: "/about" },
 ];
+export const dashBoardLinks = [
+  { label: "Profile", link: "/dashboard/profile" },
+  { label: "Messages", link: "/dashboard/messages" },
+  { label: "Saved experts", link: "/dashboard/experts" },
+  { label: "My application", link: "/dashboard/application" },
+];
 export const quickLinks = [
   { label: "FAQ's", link: "/faqs" },
   { label: "About us", link: "/about" },
@@ -27,7 +33,6 @@ export const prods = [
   "Direction & Editorial",
   "Post Production & Finishing",
 ];
-
 
 export type UserProfile = {
   name?: string;

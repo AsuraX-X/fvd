@@ -8,8 +8,6 @@ import { useEffect, useRef, useState } from "react";
 import Logo from "./Logo";
 import MobileHeader from "./MobileHeader";
 
-
-
 const Header = () => {
   const path = usePathname();
   const [user, setUser] = useState<UserProfile | null>(null);
@@ -35,7 +33,7 @@ const Header = () => {
         });
         localStorage.setItem("better-auth.message", payload);
       } catch (e) {
-        /* ignore */
+        console.error(e);
       }
 
       setUser(null);
@@ -146,15 +144,15 @@ const Header = () => {
                     </p>
                     <ul className="w-full">
                       <li>
-                        <Link href={"/dashboard"}>
-                          <p className="py-3 w-full text-left px-4 hover:bg-secondary/10 transition-colors">
+                        <Link href={"/dashboard/profile"}>
+                          <p className="py-3 w-full text-secondary text-left px-4 hover:bg-secondary/10 transition-colors">
                             Dashboard
                           </p>
                         </Link>
                       </li>
                       <li>
                         <Link href={"/"}>
-                          <p className="py-3 w-full text-left px-4 hover:bg-secondary/10 transition-colors">
+                          <p className="py-3 w-full text-secondary text-left px-4 hover:bg-secondary/10 transition-colors">
                             Messages
                           </p>
                         </Link>
@@ -165,7 +163,7 @@ const Header = () => {
                           onClick={handleSignOut}
                           disabled={signingOut}
                           aria-busy={signingOut}
-                          className={`py-3 w-full text-left px-4 hover:bg-secondary/10 transition-colors border-t border-t-secondary/20 ${signingOut ? "opacity-60 pointer-events-none" : ""}`}
+                          className={`py-3 w-full text-left px-4 hover:bg-secondary/10 text-secondary transition-colors border-t border-t-secondary/20 ${signingOut ? "opacity-60 pointer-events-none" : ""}`}
                         >
                           {signingOut ? (
                             <span className="flex items-center">

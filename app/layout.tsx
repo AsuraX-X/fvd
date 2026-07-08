@@ -1,5 +1,6 @@
 import Footer from "@/components/common/Footer";
 import Header from "@/components/common/Header";
+import TopLoadingBar from "@/components/common/TopLoadingBar";
 import { Cormorant_Garamond, Montserrat } from "next/font/google";
 import "./globals.css";
 
@@ -40,6 +41,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${montserrat.variable} ${cormorant.variable}`}>
       <body>
+        <TopLoadingBar />
         <Header />
         {children}
         <Footer />
