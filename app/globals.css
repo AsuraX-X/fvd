@@ -89,6 +89,13 @@ button {
   @apply font-sans;
 }
 
+@utility form-label {
+  @apply text-[10px] block text-body uppercase;
+}
+@utility form-input {
+  @apply border-b border-b-secondary/20 focus-visible:border-b-secondary transition-colors py-1 text-sm focus-visible:outline-none w-full;
+}
+
 @utility small-header {
   @apply mb-6 text-xs tracking-widest uppercase text-body/90;
 }

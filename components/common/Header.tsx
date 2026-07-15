@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import AvatarImage from "./AvatarImage";
 import Logo from "./Logo";
 import MobileHeader from "./MobileHeader";
 
@@ -19,23 +20,7 @@ const Header = () => {
   const handleSignOut = async () => {
     setSigningOut(true);
     try {
-      await fetch(`/api/auth/sign-out`, {
-        method: "POST",
-        credentials: "include",
-      });
-      // broadcast to other tabs using the same channel the library uses
-      try {
-        const payload = JSON.stringify({
-          event: "session",
-          data: { trigger: "signout" },
-          clientId: Math.random().toString(36).substring(7),
-          timestamp: Date.now(),
-        });
-        localStorage.setItem("better-auth.message", payload);
-      } catch (e) {
-        console.error(e);
-      }
-
+      await authClient.signOut();
       setUser(null);
       router.push("/");
     } catch (error) {
@@ -108,7 +93,11 @@ const Header = () => {
           </ul>
         </div>
         <div className="space-x-4 flex items-center">
-          {!user && loaded ? (
+          {!loaded ? (
+            <div className="flex items-center gap-3" aria-hidden="true">
+              <div className="h-10 w-10 rounded-full bg-secondary/15 animate-pulse" />
+            </div>
+          ) : !user ? (
             <Link href={"/account?signin=true"} className="link">
               Sign In
             </Link>
@@ -120,11 +109,16 @@ const Header = () => {
               className="rounded-full size-10 cursor-pointer border border-secondary/0 hover:bg-secondary transition-colors bg-gray-600 relative text-white flex items-center justify-center"
             >
               {user.image ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
+                <AvatarImage
+                  key={user.image}
                   src={user.image}
                   alt="profile image"
                   className="absolute rounded-full inset-0 h-full w-full object-cover"
+                  fallback={
+                    <span className="font-semibold">
+                      {(user.name || user.email || "U")[0].toUpperCase()}
+                    </span>
+                  }
                 />
               ) : (
                 <span className=" font-semibold">
@@ -144,7 +138,7 @@ const Header = () => {
                     </p>
                     <ul className="w-full">
                       <li>
-                        <Link href={"/dashboard/profile"}>
+                        <Link href={"/dashboard/experts"}>
                           <p className="py-3 w-full text-secondary text-left px-4 hover:bg-secondary/10 transition-colors">
                             Dashboard
                           </p>

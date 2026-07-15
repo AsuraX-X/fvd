@@ -42,6 +42,7 @@ export const POST = async (req: Request) => {
     }
   } catch (e) {
     /* ignore */
+    console.error(e);
   }
 
   return new Response(res.body, { status: res.status, headers });

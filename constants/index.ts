@@ -5,10 +5,10 @@ export const links = [
   { label: "About", link: "/about" },
 ];
 export const dashBoardLinks = [
-  { label: "Profile", link: "/dashboard/profile" },
-  { label: "Messages", link: "/dashboard/messages" },
   { label: "Saved experts", link: "/dashboard/experts" },
+  { label: "Messages", link: "/dashboard/messages" },
   { label: "My application", link: "/dashboard/application" },
+  { label: "Profile", link: "/dashboard/profile" },
 ];
 export const quickLinks = [
   { label: "FAQ's", link: "/faqs" },
