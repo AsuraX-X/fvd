@@ -13,12 +13,18 @@ const page = async () => {
 
   const profile = await prisma.profile.findUnique({
     where: { userId: session.user.id },
+    include: {
+      links: { orderBy: { order: "asc" } },
+      selectedProjects: { orderBy: { order: "asc" } },
+    },
   });
 
   return (
     <div>
       <ProfileForm
+        userId={session.user.id}
         email={session.user.email}
+        role={profile?.role ?? "USER"}
         profile={{
           avatar: profile?.avatar ?? session.user.image ?? null,
           firstName: profile?.firstName ?? "",
@@ -27,7 +33,20 @@ const page = async () => {
           headline: profile?.headline ?? "",
           website: profile?.website ?? "",
           bio: profile?.bio ?? "",
+          specialty: profile?.specialty ?? "",
+          rate: profile?.rate ?? null,
         }}
+        links={
+          profile?.links.map((link) => ({ label: link.label, url: link.url })) ??
+          []
+        }
+        selectedProjects={
+          profile?.selectedProjects.map((project) => ({
+            title: project.title,
+            url: project.url,
+            imageUrl: project.imageUrl,
+          })) ?? []
+        }
       />
     </div>
   );

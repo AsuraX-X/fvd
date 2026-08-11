@@ -1,5 +1,7 @@
 "use client";
 import { links } from "@/constants";
+import { useDialog } from "@/contexts/DialogContext";
+import { useRole } from "@/contexts/RoleContext";
 import { Menu, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
@@ -9,6 +11,8 @@ import Logo from "./Logo";
 
 const MobileHeader = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { openDialog } = useDialog();
+  const role = useRole();
 
   const parent = {
     visible: {
@@ -111,9 +115,17 @@ const MobileHeader = () => {
                   <button className="py-3 rounded-md button-secondary">
                     Sign In
                   </button>
-                  <button className="py-3 rounded-md button-primary">
-                    Work with us
-                  </button>
+                  {role !== "EXPERT" && role !== "ADMIN" && (
+                    <button
+                      onClick={() => {
+                        openDialog("apply");
+                        setIsOpen(false);
+                      }}
+                      className="py-3 rounded-md button-primary"
+                    >
+                      Work with us
+                    </button>
+                  )}
                 </div>
               </motion.div>
             </AnimatePresence>

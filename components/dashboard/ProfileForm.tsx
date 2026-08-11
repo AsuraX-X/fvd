@@ -1,14 +1,20 @@
 "use client";
 
 import {
+  updateExpertProfile,
   updateProfile,
   type ProfileFormState,
 } from "@/app/dashboard/profile/actions";
 import AvatarImage from "@/components/common/AvatarImage";
+import ExpertProfileFields from "@/components/dashboard/ExpertProfileFields";
+import { authClient } from "@/lib/auth-client";
+import { uploadImageToBlob } from "@/lib/blob-upload";
 import { useActionState, useEffect, useRef, useState } from "react";
 
 type ProfileFormProps = {
+  userId: string;
   email: string;
+  role: "ADMIN" | "EXPERT" | "USER";
   profile: {
     avatar: string | null;
     firstName: string;
@@ -17,16 +23,47 @@ type ProfileFormProps = {
     headline: string;
     website: string;
     bio: string;
+    specialty: string;
+    rate: number | null;
   };
+  links: { label: string; url: string }[];
+  selectedProjects: { title: string; url: string; imageUrl: string }[];
 };
 
 const initialState: ProfileFormState = null;
 
-const ProfileForm = ({ email, profile }: ProfileFormProps) => {
+const ProfileForm = ({
+  userId,
+  email,
+  role,
+  profile,
+  links,
+  selectedProjects,
+}: ProfileFormProps) => {
+  const isExpert = role === "EXPERT";
   const [state, formAction, isPending] = useActionState(
-    updateProfile,
+    isExpert ? updateExpertProfile : updateProfile,
     initialState,
   );
+
+  const [avatarUrl, setAvatarUrl] = useState(profile.avatar ?? "");
+  const [avatarPreview, setAvatarPreview] = useState(profile.avatar ?? "");
+  const [avatarUploading, setAvatarUploading] = useState(false);
+  const [expertUploading, setExpertUploading] = useState(false);
+
+  const handleAvatarChange = async (file: File | undefined) => {
+    if (!file) return;
+
+    setAvatarPreview(URL.createObjectURL(file));
+    setAvatarUploading(true);
+    try {
+      const url = await uploadImageToBlob(userId, "avatar", file);
+      setAvatarUrl(url);
+      setAvatarPreview(url);
+    } finally {
+      setAvatarUploading(false);
+    }
+  };
 
   const maxLength = 1200;
 
@@ -46,6 +83,12 @@ const ProfileForm = ({ email, profile }: ProfileFormProps) => {
     console.log(char);
   }, [char]);
 
+  useEffect(() => {
+    if (state?.success) {
+      authClient.$store.notify("$sessionSignal");
+    }
+  }, [state]);
+
   return (
     <form
       action={formAction}
@@ -54,10 +97,10 @@ const ProfileForm = ({ email, profile }: ProfileFormProps) => {
       <div className="flex items-center gap-4">
         <div>
           <div className="size-16 rounded-full bg-secondary/10 overflow-hidden flex items-center justify-center">
-            {profile.avatar && (
+            {avatarPreview && (
               <AvatarImage
-                key={profile.avatar}
-                src={profile.avatar}
+                key={avatarPreview}
+                src={avatarPreview}
                 alt="Profile avatar"
                 className="h-full w-full object-cover"
                 fallback={
@@ -74,9 +117,20 @@ const ProfileForm = ({ email, profile }: ProfileFormProps) => {
             htmlFor="avatar"
             className="uppercase text-xs bg-secondary/10 px-4 py-2 rounded-full cursor-pointer border border-primary-light hover:border-secondary transition-colors"
           >
-            {profile.avatar ? "Change Photo" : "Upload Photo"}
+            {avatarUploading
+              ? "Uploading..."
+              : avatarPreview
+                ? "Change Photo"
+                : "Upload Photo"}
           </label>
-          <input className="hidden" type="file" name="avatar" id="avatar" />
+          <input
+            className="hidden"
+            type="file"
+            accept="image/*"
+            id="avatar"
+            onChange={(e) => handleAvatarChange(e.target.files?.[0])}
+          />
+          <input type="hidden" name="avatarUrl" value={avatarUrl} />
         </div>
         <button
           type="button"
@@ -176,6 +230,17 @@ const ProfileForm = ({ email, profile }: ProfileFormProps) => {
         </p>
       </div>
 
+      {isExpert && (
+        <ExpertProfileFields
+          userId={userId}
+          specialty={profile.specialty}
+          rate={profile.rate}
+          links={links}
+          selectedProjects={selectedProjects}
+          onUploadingChange={setExpertUploading}
+        />
+      )}
+
       <div className="flex justify-between items-center">
         {state && (
           <p
@@ -186,10 +251,14 @@ const ProfileForm = ({ email, profile }: ProfileFormProps) => {
         )}
         <button
           type="submit"
-          disabled={isPending}
+          disabled={isPending || avatarUploading || expertUploading}
           className="button-primary disabled:opacity-60"
         >
-          {isPending ? "Saving..." : "Save changes"}
+          {isPending
+            ? "Saving..."
+            : avatarUploading || expertUploading
+              ? "Uploading..."
+              : "Save changes"}
         </button>
       </div>
     </form>

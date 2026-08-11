@@ -1,7 +1,13 @@
 import Footer from "@/components/common/Footer";
 import Header from "@/components/common/Header";
 import TopLoadingBar from "@/components/common/TopLoadingBar";
+import { DialogProvider } from "@/contexts/DialogContext";
+import { DialogRenderer } from "@/contexts/DialogRenderer";
+import { RoleProvider } from "@/contexts/RoleContext";
+import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 import { Cormorant_Garamond, Montserrat } from "next/font/google";
+import { headers } from "next/headers";
 import "./globals.css";
 
 const montserrat = Montserrat({
@@ -21,7 +27,8 @@ const cormorant = Cormorant_Garamond({
 
 export const metadata = {
   title: { default: "FVD", template: "%s | FVD" },
-  description: "FVD — creative studio activating brand value through sensory experiences.",
+  description:
+    "FVD — creative studio activating brand value through sensory experiences.",
   alternates: { canonical: "/" },
   openGraph: {
     siteName: "FVD",
@@ -33,18 +40,31 @@ export const metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await auth.api.getSession({ headers: await headers() });
+  const profile = session
+    ? await prisma.profile.findUnique({
+        where: { userId: session.user.id },
+        select: { role: true },
+      })
+    : null;
+
   return (
     <html lang="en" className={`${montserrat.variable} ${cormorant.variable}`}>
       <body>
-        <TopLoadingBar />
-        <Header />
-        {children}
-        <Footer />
+        <RoleProvider role={profile?.role ?? null}>
+          <DialogProvider>
+            <TopLoadingBar />
+            <Header />
+            {children}
+            <Footer />
+            <DialogRenderer />
+          </DialogProvider>
+        </RoleProvider>
       </body>
     </html>
   );

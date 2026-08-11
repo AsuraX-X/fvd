@@ -1,5 +1,7 @@
 "use client";
 import { links, UserProfile } from "@/constants";
+import { useDialog } from "@/contexts/DialogContext";
+import { useRole } from "@/contexts/RoleContext";
 import { authClient } from "@/lib/auth-client";
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
@@ -11,17 +13,19 @@ import MobileHeader from "./MobileHeader";
 
 const Header = () => {
   const path = usePathname();
-  const [user, setUser] = useState<UserProfile | null>(null);
+  const { data: session, isPending } = authClient.useSession();
+  const user = (session?.user ?? null) as UserProfile | null;
+  const loaded = !isPending;
+  const role = useRole();
   const [isOpen, setIsOpen] = useState(false);
-  const [loaded, setLoaded] = useState(false);
   const router = useRouter();
   const [signingOut, setSigningOut] = useState(false);
+  const { openDialog } = useDialog();
 
   const handleSignOut = async () => {
     setSigningOut(true);
     try {
       await authClient.signOut();
-      setUser(null);
       router.push("/");
     } catch (error) {
       console.error("Sign out failed", error);
@@ -29,24 +33,6 @@ const Header = () => {
       setSigningOut(false);
     }
   };
-
-  useEffect(() => {
-    const loadSession = async () => {
-      try {
-        const session = await authClient.getSession();
-
-        if (session?.data?.user) {
-          setUser(session.data.user as UserProfile);
-        }
-      } catch (error) {
-        console.error("Failed to load auth session", error);
-      } finally {
-        setLoaded(true);
-      }
-    };
-
-    loadSession();
-  }, []);
 
   const profileRef = useRef<HTMLDivElement | null>(null);
 
@@ -106,7 +92,7 @@ const Header = () => {
             <div
               ref={profileRef}
               onClick={() => setIsOpen(!isOpen)}
-              className="rounded-full size-10 cursor-pointer border border-secondary/0 hover:bg-secondary transition-colors bg-gray-600 relative text-white flex items-center justify-center"
+              className="rounded-full size-10 cursor-pointer border border-secondary/0 hover:border-secondary transition-colors bg-gray-600 relative text-white flex items-center justify-center"
             >
               {user.image ? (
                 <AvatarImage
@@ -194,7 +180,14 @@ const Header = () => {
               </AnimatePresence>
             </div>
           ) : null}
-          <button className="button-primary">Work with us</button>
+          {role !== "EXPERT" && role !== "ADMIN" && (
+            <button
+              onClick={() => openDialog("apply")}
+              className="button-primary"
+            >
+              Work with us
+            </button>
+          )}
         </div>
       </div>
       <MobileHeader />

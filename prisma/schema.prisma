@@ -44,14 +44,49 @@ model Profile {
   headline  String?
   website   String?
   bio       String?
+  specialty String?
+  rate      Int?
   role      Role     @default(USER)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  userId String @unique
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId           String            @unique
+  user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  links            ProfileLink[]
+  selectedProjects SelectedProject[]
 
   @@map("profile")
+}
+
+model ProfileLink {
+  id        String   @id @default(cuid())
+  label     String
+  url       String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  profileId String
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+  @@map("profile_link")
+}
+
+model SelectedProject {
+  id        String   @id @default(cuid())
+  imageUrl  String
+  title     String
+  url       String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  profileId String
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+  @@map("selected_project")
 }
 
 model Session {

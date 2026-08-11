@@ -1,5 +1,6 @@
 "use client";
 
+import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { useState, type SyntheticEvent } from "react";
 
@@ -20,21 +21,12 @@ const SigninForm = ({ signin }: SigninFormProps) => {
     setLoading(true);
 
     try {
-      const endpoint = signin
-        ? "/api/auth/sign-in/email"
-        : "/api/auth/sign-up/email";
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
+      const { error: authError } = signin
+        ? await authClient.signIn.email({ email, password })
+        : await authClient.signUp.email({ email, password, name: email });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        setError(data.error?.message || "Authentication failed");
+      if (authError) {
+        setError(authError.message || "Authentication failed");
         setLoading(false);
         return;
       }
