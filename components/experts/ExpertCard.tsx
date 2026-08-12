@@ -1,5 +1,5 @@
-import { Star } from "lucide-react";
 import Link from "next/link";
+import SaveExpertButton from "./SaveExpertButton";
 
 interface ExpertCard {
   id: string;
@@ -8,6 +8,7 @@ interface ExpertCard {
   name: string;
   bio: string | null;
   rate: number | null;
+  isSaved: boolean;
 }
 
 const ExpertCard = ({
@@ -17,9 +18,10 @@ const ExpertCard = ({
   name,
   bio,
   rate,
+  isSaved,
 }: ExpertCard) => {
   return (
-    <div className="min-w-full border-primary-light border hover:border-secondary-lighter/50 transition-colors cursor-pointer  bg-primary-light p-4 rounded-3xl">
+    <div className="min-w-full group border-primary-light border hover:border-secondary-lighter/50 transition-colors duration-500 cursor-pointer  bg-primary-light p-4 rounded-3xl">
       <div className="relative overflow-hidden rounded-2xl w-full transition-all aspect-video bg-secondary/10">
         <div className="absolute flex items-center justify-between w-full py-2 z-1 px-3">
           {specialty && (
@@ -27,15 +29,17 @@ const ExpertCard = ({
               {specialty}
             </span>
           )}
-          <button className="bg-primary/50 p-1.5 backdrop-blur-2xl rounded-full ml-auto">
-            <Star size={16} />
-          </button>
+          <SaveExpertButton
+            expertId={id}
+            initialSaved={isSaved}
+            className="bg-primary/50 p-1.5 backdrop-blur-2xl rounded-full ml-auto"
+          />
         </div>
         {profileImage && (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={profileImage}
-            className="absolute inset-0 h-full w-full object-cover hover:scale-105 transition-all"
+            className="absolute inset-0 ease-in-out duration-500 h-full w-full object-cover group-hover:scale-105 transition-all"
             alt={`${name} photo`}
           />
         )}

@@ -29,6 +29,7 @@ model User {
   sessions      Session[]
   accounts      Account[]
   profile       Profile?
+  savedExperts  SavedExpert[]
 
   @@unique([email])
   @@map("user")
@@ -54,8 +55,24 @@ model Profile {
   user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   links            ProfileLink[]
   selectedProjects SelectedProject[]
+  savedBy          SavedExpert[]     @relation("SavedExpertProfile")
 
   @@map("profile")
+}
+
+model SavedExpert {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  expertId String
+  expert   Profile @relation("SavedExpertProfile", fields: [expertId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, expertId])
+  @@index([expertId])
+  @@map("saved_expert")
 }
 
 model ProfileLink {

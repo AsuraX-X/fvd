@@ -1,25 +1,48 @@
 import { Star } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
-const ExpertCard = () => {
+interface ExpertCardProps {
+  id: string;
+  name: string;
+  headline: string | null;
+  avatar: string | null;
+  projectImage: string | null;
+}
+
+const ExpertCard = ({
+  id,
+  name,
+  headline,
+  avatar,
+  projectImage,
+}: ExpertCardProps) => {
   return (
-    <div className="w-full cursor-pointer bg-primary-light space-y-4 p-4 rounded-2xl">
+    <Link
+      href={`/experts/${id}`}
+      className="w-full block cursor-pointer bg-primary-light space-y-4 p-4 rounded-2xl"
+    >
       <div className="relative w-full aspect-video overflow-hidden bg-gray-600 rounded-xl">
         <Image
-          src={"https://placehold.co/160x90"}
-          className=""
-          alt="expert"
+          src={projectImage || "https://placehold.co/160x90"}
+          alt={`${name} project`}
           fill
+          className="object-cover"
         />
       </div>
       <div className="flex items-center justify-between">
         <div className="flex gap-2 items-center">
-          <div className="relative overflow-hidden rounded-full bg-gray-300 size-12">
-            <Image src={"https://placehold.co/12x12"} alt="expert-picture" fill />
+          <div className="relative overflow-hidden rounded-full bg-gray-300 shrink-0 size-12">
+            <Image
+              src={avatar || "https://placehold.co/48x48"}
+              alt={`${name} photo`}
+              fill
+              className="object-cover"
+            />
           </div>
           <div>
-            <h4 className="text-sm">Sarah Jenkins</h4>
-            <p className="text-body text-xs">Head CGI Director</p>
+            <h4 className="text-sm">{name}</h4>
+            {headline && <p className="text-body text-xs">{headline}</p>}
           </div>
         </div>
         <div className="bg-secondary/10 py-1 px-1.5 rounded-md">
@@ -29,7 +52,7 @@ const ExpertCard = () => {
           </p>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 

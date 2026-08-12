@@ -1,4 +1,4 @@
-import ProfileForm from "@/components/dashboard/ProfileForm";
+import ProfileForm from "@/components/dashboard/profile/ProfileForm";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";

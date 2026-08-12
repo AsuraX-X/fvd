@@ -1,7 +1,27 @@
 import Link from "next/link";
+import { prisma } from "@/lib/prisma";
 import ExpertCard from "./ExpertCard";
 
-const Experts = () => {
+const pickRandom = <T,>(items: T[], count: number): T[] => {
+  return items
+    .map((item) => ({ item, sort: Math.random() }))
+    .sort((a, b) => a.sort - b.sort)
+    .slice(0, count)
+    .map(({ item }) => item);
+};
+
+const Experts = async () => {
+  const experts = await prisma.profile.findMany({
+    where: { role: "EXPERT", selectedProjects: { some: {} } },
+    include: { selectedProjects: true },
+  });
+
+  const randomExperts = pickRandom(experts, 3);
+
+  if (randomExperts.length === 0) {
+    return null;
+  }
+
   return (
     <section className="py-20">
       <div className="px-8 mx-auto max-w-7xl">
@@ -22,9 +42,16 @@ const Experts = () => {
           </Link>
         </div>
         <div className="grid grid-cols-1 gap-8 py-10 md:grid-cols-2 lg:grid-cols-3">
-          <ExpertCard />
-          <ExpertCard />
-          <ExpertCard />
+          {randomExperts.map((expert) => (
+            <ExpertCard
+              key={expert.id}
+              id={expert.id}
+              name={`${expert.firstName} ${expert.surname}`.trim()}
+              headline={expert.headline}
+              avatar={expert.avatar}
+              projectImage={pickRandom(expert.selectedProjects, 1)[0]?.imageUrl ?? null}
+            />
+          ))}
         </div>
       </div>
     </section>

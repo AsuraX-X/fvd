@@ -6,7 +6,7 @@ import {
   type ProfileFormState,
 } from "@/app/dashboard/profile/actions";
 import AvatarImage from "@/components/common/AvatarImage";
-import ExpertProfileFields from "@/components/dashboard/ExpertProfileFields";
+import ExpertProfileFields from "@/components/dashboard/profile/ExpertProfileFields";
 import { authClient } from "@/lib/auth-client";
 import { uploadImageToBlob } from "@/lib/blob-upload";
 import { useActionState, useEffect, useRef, useState } from "react";

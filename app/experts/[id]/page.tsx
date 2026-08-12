@@ -1,7 +1,10 @@
 import ProjectDialog from "@/components/experts/ProjectDialog";
+import SaveExpertButton from "@/components/experts/SaveExpertButton";
+import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { ArrowLeft, ArrowUpRight, Star } from "lucide-react";
+import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
+import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 
 type PageProps = {
@@ -10,6 +13,8 @@ type PageProps = {
 
 const page = async ({ params }: PageProps) => {
   const { id } = await params;
+
+  const session = await auth.api.getSession({ headers: await headers() });
 
   const profile = await prisma.profile.findUnique({
     where: { id },
@@ -22,6 +27,14 @@ const page = async ({ params }: PageProps) => {
   if (!profile || profile.role !== "EXPERT") {
     notFound();
   }
+
+  const isSaved = session
+    ? Boolean(
+        await prisma.savedExpert.findUnique({
+          where: { userId_expertId: { userId: session.user.id, expertId: id } },
+        }),
+      )
+    : false;
 
   const name = `${profile.firstName} ${profile.surname}`.trim();
 
@@ -68,9 +81,13 @@ const page = async ({ params }: PageProps) => {
         </div>
         <div className="flex gap-2 items-center">
           <button className="button-primary">Contact Expert</button>
-          <button className="button-secondary flex items-center gap-1">
-            <Star size={14} /> Save
-          </button>
+          <SaveExpertButton
+            expertId={id}
+            initialSaved={isSaved}
+            size={14}
+            showLabel
+            className="button-secondary flex items-center gap-1"
+          />
         </div>
       </div>
       <div className="grid gap-6 grid-cols-3">

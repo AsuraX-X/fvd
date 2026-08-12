@@ -1,11 +1,29 @@
+import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { headers } from "next/headers";
 import ExpertCard from "./ExpertCard";
 
 const ExpertGrid = async () => {
+  const session = await auth.api.getSession({ headers: await headers() });
+
   const experts = await prisma.profile.findMany({
     where: { role: "EXPERT" },
     orderBy: { createdAt: "desc" },
   });
+
+  const savedExpertIds = session
+    ? new Set(
+        (
+          await prisma.savedExpert.findMany({
+            where: {
+              userId: session.user.id,
+              expertId: { in: experts.map((expert) => expert.id) },
+            },
+            select: { expertId: true },
+          })
+        ).map((saved) => saved.expertId),
+      )
+    : new Set<string>();
 
   if (experts.length === 0) {
     return (
@@ -26,6 +44,7 @@ const ExpertGrid = async () => {
           name={`${expert.firstName} ${expert.surname}`.trim()}
           bio={expert.bio}
           rate={expert.rate}
+          isSaved={savedExpertIds.has(expert.id)}
         />
       ))}
     </section>

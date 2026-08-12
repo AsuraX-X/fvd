@@ -1,3 +1,4 @@
+import Link from "next/link";
 import ApplyBtn from "./ApplyBtn";
 
 const Hero = () => {
@@ -13,8 +14,14 @@ const Hero = () => {
           impression.
         </p>
         <div className="flex gap-4 w-fit lg:gap-6">
-          <button className="button-primary shrink-0">Hire an expert</button>
-          <ApplyBtn content="Apply as an expert" variant="secondary" width={180} />
+          <Link href={"/experts"}>
+            <button className="button-primary shrink-0">Hire an expert</button>
+          </Link>
+          <ApplyBtn
+            content="Apply as an expert"
+            variant="secondary"
+            width={180}
+          />
         </div>
       </div>
     </section>
