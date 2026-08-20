@@ -68,7 +68,9 @@ const MobileHeader = () => {
 
   return (
     <div className="flex items-center justify-between px-6  lg:hidden">
-      <Logo />
+      <Link href={"/"}>
+        <Logo />
+      </Link>
       <div>
         <button onClick={() => openMenu()}>
           <Menu />
