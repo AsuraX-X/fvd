@@ -131,7 +131,7 @@ const Header = () => {
                         </Link>
                       </li>
                       <li>
-                        <Link href={"/"}>
+                        <Link href={"/dashboard/messages"}>
                           <p className="py-3 w-full text-secondary text-left px-4 hover:bg-secondary/10 transition-colors">
                             Messages
                           </p>
