@@ -11,7 +11,7 @@ const Logo = () => {
         src={isDark ? "/logo/FVD-LGOa-inverted.png" : "/logo/FVD-LGOa.png"}
         alt="logo"
         fill
-        objectFit="cover"
+        className="object-cover"
       />
     </div>
   );

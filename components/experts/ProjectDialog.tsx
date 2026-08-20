@@ -1,6 +1,7 @@
 "use client";
 import { ArrowUpRight, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
+import Image from "next/image";
 import { useState } from "react";
 
 const ProjectDialog = ({
@@ -20,11 +21,12 @@ const ProjectDialog = ({
         onClick={() => setIsOpen(true)}
         className="relative w-full h-full aspect-4/3 bg-primary-light rounded-2xl overflow-hidden block group"
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+        <Image
           src={image}
           alt={title}
-          className="absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition-all"
+          fill
+          sizes="(max-width: 640px) 50vw, 300px"
+          className="object-cover group-hover:scale-105 transition-all"
         />
         <p className="absolute bottom-0 left-0 right-0 bg-primary/50 backdrop-blur-2xl text-xs font-bold px-3 py-2">
           {title}

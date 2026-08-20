@@ -1,3 +1,4 @@
+import AvatarImage from "@/components/common/AvatarImage";
 import Link from "next/link";
 import SaveExpertButton from "./SaveExpertButton";
 
@@ -36,11 +37,12 @@ const ExpertCard = ({
           />
         </div>
         {profileImage && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <AvatarImage
+            key={profileImage}
             src={profileImage}
-            className="absolute inset-0 ease-in-out duration-500 h-full w-full object-cover group-hover:scale-105 transition-all"
             alt={`${name} photo`}
+            className="absolute inset-0 ease-in-out duration-500 h-full w-full object-cover group-hover:scale-105 transition-all"
+            fallback={null}
           />
         )}
       </div>
@@ -56,9 +58,12 @@ const ExpertCard = ({
         </div>
       </div>
       <div className="flex gap-2">
-        <button className="w-full text-xs font-bold button-primary">
+        <Link
+          href={`/messages/${id}`}
+          className="w-full text-xs text-center font-bold button-primary"
+        >
           Message
-        </button>
+        </Link>
         <Link
           href={`/experts/${id}`}
           className="button-secondary text-xs font-bold w-full text-center"

@@ -62,7 +62,7 @@ button {
 }
 
 @utility button-primary {
-  @apply text-primary border border-secondary h-fit bg-secondary py-2 px-4 rounded-full font-medium text-sm transition-colors;
+  @apply disabled:opacity-80 text-primary border border-secondary h-fit bg-secondary py-2 px-4 rounded-full font-medium text-sm transition-colors;
 
   &:hover {
     @apply border-secondary-lighter bg-secondary-light;
@@ -70,7 +70,7 @@ button {
 }
 
 @utility button-secondary {
-  @apply border-primary-lighter/50 border h-fit  py-2 px-4 rounded-full font-medium text-sm transition-colors;
+  @apply disabled:opacity-80 border-primary-lighter/50 border h-fit  py-2 px-4 rounded-full font-medium text-sm transition-colors;
 
   &:hover {
     @apply border-primary-lighter bg-primary-light;

@@ -31,6 +31,7 @@ Next.js 16 App Router + React 19 + TypeScript, Tailwind CSS v4, Prisma 7 (driver
 - `Profile.role` (`ADMIN` | `EXPERT` | `USER`) gates whether a profile shows up in the public experts directory (`role: "EXPERT"`) and what the dashboard displays.
 - Experts have `ProfileLink[]` (external links) and `SelectedProject[]` (portfolio pieces with `imageUrl`/`title`/`url`), both ordered by an `order` int field and fully replaced (`deleteMany` + `createMany`) on profile save rather than diffed.
 - `SavedExpert` is a join table (`userId` + `expertId`, unique pair) for the "save an expert" feature — `expertId` references `Profile.id`, not `User.id`.
+- `Conversation` (`participantOneId`/`participantTwoId`, canonically ordered — smaller `Profile.id` always stored as `participantOneId` — via `@@unique([participantOneId, participantTwoId])`) and `Message` (`conversationId`, `senderId`, `content`, nullable `readAt`) back the messaging feature. Both participant fields are role-agnostic FKs to `Profile.id`; role-pairing rules (client↔expert, or admin↔anyone) are enforced in `getOrCreateConversation` (`app/messages/actions.ts`), not the DB — Postgres has no clean way to express that constraint declaratively.
 - After changing `schema.prisma`, always run `prisma migrate dev` (needs a reachable `DATABASE_URL`) and then confirm `generated/prisma` picked up the change before writing code against new fields/models.
 
 ### Auth
@@ -52,11 +53,19 @@ Next.js 16 App Router + React 19 + TypeScript, Tailwind CSS v4, Prisma 7 (driver
   - Directly-invoked actions called from an `onClick` via `useTransition` (e.g. `toggleSavedExpert` in `app/experts/actions.ts`), returning a discriminated union like `{ success: true; saved: boolean } | { success: false; message: string }`.
 - Actions call `revalidatePath(...)` for every route whose server-rendered data the mutation affects (list page, detail page, dashboard page) rather than relying on client-side refetching.
 - No session → actions return a `{ success: false, message }` error object; they do not throw or redirect (unlike pages, which redirect).
+- An action that's called directly from a page's server-render body (not from a client `onClick`/transition) must never call `revalidatePath` — Next.js throws "used revalidatePath ... during render, which is unsupported." `getOrCreateConversation` (`app/messages/actions.ts`) is called this way from `app/messages/[id]/page.tsx` to auto-create a conversation on first visit, so it deliberately skips revalidation; `sendMessage`/`markConversationRead` in the same file are only ever invoked from a client component's `useTransition`, so they revalidate freely.
 
 ### Image handling
 
 - `next.config.ts` `images.remotePatterns` explicitly allowlists `placehold.co`, `*.public.blob.vercel-storage.com`, and `picsum.photos` — any new remote image host must be added there or `next/image` will refuse to render it.
 - User-uploaded images (avatars, project images) go through Vercel Blob: `lib/blob-upload.ts` (`uploadImageToBlob`, client-side) calls `@vercel/blob/client`'s `upload()` against `app/api/profile/blob-upload/route.ts`, which validates the session and that the upload path is scoped to `profile/${session.user.id}/...` before issuing a token.
+
+### Real-time (Pusher)
+
+- Messaging uses Pusher Channels for live delivery — chosen over a persistent socket server since the app deploys to Vercel serverless. `lib/pusher.ts` is the server-side singleton (`pusherServer`, mirrors `lib/prisma.ts`'s pattern); `lib/pusher-client.ts` is the browser-side singleton (`getPusherClient()`), imported only from client components.
+- Channel convention: `private-conversation-<conversationId>`, event `new-message`. `sendMessage` triggers the event immediately after the `Message` row commits (never before) and swallows/logs a Pusher failure rather than failing the action, since the message is already persisted by that point.
+- `app/api/pusher/auth/route.ts` authorizes private-channel subscriptions — it re-derives the session, parses the conversation id out of the channel name, and checks the caller is one of the conversation's two participants before calling `pusherServer.authorizeChannel(...)`.
+- Env vars: `PUSHER_APP_ID`/`PUSHER_KEY`/`PUSHER_SECRET`/`PUSHER_CLUSTER` (server-only) plus `NEXT_PUBLIC_PUSHER_KEY`/`NEXT_PUBLIC_PUSHER_CLUSTER` (bundled client-side — never put the secret in a `NEXT_PUBLIC_*` var, since anyone could then self-sign channel auth).
 
 ### Frontend structure
 
@@ -73,4 +82,6 @@ Next.js 16 App Router + React 19 + TypeScript, Tailwind CSS v4, Prisma 7 (driver
 
 ### React Compiler / lint gotcha
 
-The React Compiler ESLint rule flags impure calls (e.g. `Math.random()`, `Date.now()`) made directly inside a component body as "Cannot call impure function during render." When randomness is needed in a server component (e.g. picking a random project image or a random subset of rows), put the `Math.random()` call inside a plain helper function defined outside the component and call the helper from within it.
+- The React Compiler ESLint rule flags impure calls (e.g. `Math.random()`, `Date.now()`) made directly inside a component body as "Cannot call impure function during render." When randomness is needed in a server component (e.g. picking a random project image or a random subset of rows), put the `Math.random()` call inside a plain helper function defined outside the component and call the helper from within it.
+- It also flags `setState` called synchronously inside a `useEffect` body (`react-hooks/set-state-in-effect`) — e.g. syncing a prop into state on change. Prefer a `key={...}` on the component to force a remount with fresh initial state instead (see `MessageThread` in `components/messages/MessageThread.tsx`, keyed by `conversationId` in `app/messages/[id]/page.tsx`).
+- It also flags reassigning a `let` variable declared outside a `.map()`/render loop (`react-hooks/immutability`), e.g. tracking "did the day change" across list items with a mutable variable. Precompute the derived array (e.g. via `.map((item, index) => ...)` comparing against `array[index - 1]`) instead of mutating a variable during render.

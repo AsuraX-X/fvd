@@ -1,10 +1,11 @@
+import AvatarImage from "@/components/common/AvatarImage";
 import ProjectDialog from "@/components/experts/ProjectDialog";
 import SaveExpertButton from "@/components/experts/SaveExpertButton";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
-import Link from "next/link";
 import { headers } from "next/headers";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 type PageProps = {
@@ -52,11 +53,16 @@ const page = async ({ params }: PageProps) => {
         <div className="flex gap-4">
           <div className="relative w-32 aspect-square rounded-2xl bg-secondary overflow-hidden">
             {profile.avatar ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
+              <AvatarImage
+                key={profile.avatar}
                 src={profile.avatar}
                 alt={`${name} photo`}
                 className="absolute inset-0 h-full w-full object-cover"
+                fallback={
+                  <span className="absolute inset-0 flex items-center justify-center text-3xl font-semibold text-primary">
+                    {name[0]?.toUpperCase() ?? "U"}
+                  </span>
+                }
               />
             ) : (
               <span className="absolute inset-0 flex items-center justify-center text-3xl font-semibold text-primary">
@@ -79,17 +85,16 @@ const page = async ({ params }: PageProps) => {
             )}
           </div>
         </div>
-        <div className="flex gap-2 items-center">
-          <button className="button-primary">Contact Expert</button>
-          <SaveExpertButton
-            expertId={id}
-            initialSaved={isSaved}
-            size={14}
-            showLabel
-            className="button-secondary flex items-center gap-1"
-          />
-        </div>
+
+        <SaveExpertButton
+          expertId={id}
+          initialSaved={isSaved}
+          size={14}
+          showLabel
+          className="button-secondary flex items-center gap-1"
+        />
       </div>
+
       <div className="grid gap-6 grid-cols-3">
         <div className="col-span-2 space-y-6">
           <div>
@@ -147,9 +152,11 @@ const page = async ({ params }: PageProps) => {
                 </ul>
               </div>
             )}
-            <button className="button-primary mt-2 w-full">
-              Start a conversation
-            </button>
+            <Link href={`/messages/${id}`}>
+              <button className="button-primary mt-2 w-full">
+                Start a conversation
+              </button>
+            </Link>
           </div>
         </div>
       </div>
