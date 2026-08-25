@@ -10,6 +10,12 @@ export const dashBoardLinks = [
   { label: "My application", link: "/dashboard/application" },
   { label: "Profile", link: "/dashboard/profile" },
 ];
+export const adminLinks = [
+  { label: "Overview", link: "/admin/overview" },
+  { label: "Applications", link: "/admin/applications" },
+  { label: "Experts", link: "/admin/experts" },
+  { label: "Users", link: "/admin/users" },
+];
 export const quickLinks = [
   { label: "FAQ's", link: "/faqs" },
   { label: "About us", link: "/about" },

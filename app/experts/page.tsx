@@ -16,7 +16,7 @@ const page = () => {
         <div className="flex flex-col lg:flex-row gap-4 justify-between lg:items-end">
           <div>
             <p className="small-header">Experts Directory</p>
-            <h1 className="italic text-5xl md:text-6xl lg:text-7xl max-w-[20ch]">
+            <h1 className="italic text-4xl md:text-5xl lg:text-6xl max-w-[20ch]">
               Curated talent, ready to bring your brand to life.
             </h1>
           </div>

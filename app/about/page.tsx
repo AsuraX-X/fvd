@@ -36,7 +36,7 @@ const About = () => {
     <main className="py-50 space-y-30 max-w-7xl px-8 mx-auto">
       <section>
         <p className="small-header">Introduction</p>
-        <h1 className="text-7xl italic mb-8">What we do.</h1>
+        <h1 className="text-6xl italic mb-8">What we do.</h1>
         <p className="text-body max-w-[50ch] text-xl">
           Strategy & Creative. Production & Lifecycle. We incite
           thought-provoking campaigns that evoke the power of brand value — for
@@ -67,7 +67,7 @@ const About = () => {
         </div>
         <div className="space-y-6">
           <p className="small-header">Who are we?</p>
-          <h2 className="text-6xl italic">
+          <h2 className="text-5xl italic">
             We love art and are relentless about creativity.
           </h2>
           <p className="text-body text-xl">

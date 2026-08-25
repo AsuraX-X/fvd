@@ -6,7 +6,7 @@ import { DialogRenderer } from "@/contexts/DialogRenderer";
 import { RoleProvider } from "@/contexts/RoleContext";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { Cormorant_Garamond, Montserrat } from "next/font/google";
+import { Ibarra_Real_Nova, Montserrat } from "next/font/google";
 import { headers } from "next/headers";
 import "./globals.css";
 
@@ -17,11 +17,11 @@ const montserrat = Montserrat({
   display: "swap",
 });
 
-const cormorant = Cormorant_Garamond({
+const iRN = Ibarra_Real_Nova({
   subsets: ["latin"],
-  weight: ["300", "400", "600"],
+  weight: ["400", "500", "600", "700"],
   style: ["normal", "italic"],
-  variable: "--font-cormorant",
+  variable: "--font-ibarra",
   display: "swap",
 });
 
@@ -54,7 +54,7 @@ export default async function RootLayout({
     : null;
 
   return (
-    <html lang="en" className={`${montserrat.variable} ${cormorant.variable}`}>
+    <html lang="en" className={`${montserrat.variable} ${iRN.variable}`}>
       <body>
         <RoleProvider role={profile?.role ?? null}>
           <DialogProvider>

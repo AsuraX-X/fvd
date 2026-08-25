@@ -4,7 +4,7 @@
   --background: #ffffff;
   --foreground: #171717;
   --font-body: var(--font-montserrat);
-  --font-display: var(--font-cormorant);
+  --font-display: var(--font-ibarra);
   --color-primary-lighter: #b0b0b0;
   --color-primary-light: #ededed;
   --color-primary: #ffffff;
@@ -58,7 +58,7 @@ button {
   --color-secondary-light: var(--color-secondary-light);
   --color-secondary: var(--color-secondary);
   --font-sans: var(--font-inter);
-  --font-serif: var(--font-cormorant);
+  --font-serif: var(--font-ibarra);
 }
 
 @utility button-primary {

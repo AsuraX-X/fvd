@@ -6,7 +6,7 @@ const ServicesContent = () => {
       <section className="border-b lg:pb-26 md:pb-20 pb-16 border-b-secondary-lighter/10">
         <div className="px-8 max-w-7xl mx-auto  ">
           <p className="small-header">Services</p>
-          <h1 className="lg:text-7xl md:text-6xl text-5xl italic max-w-[15ch]">
+          <h1 className="lg:text-6xl md:text-5xl text-4xl italic max-w-[15ch]">
             The full cycle of brand building.
           </h1>
         </div>
