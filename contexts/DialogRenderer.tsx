@@ -1,5 +1,6 @@
 "use client";
 import ApplyDialog from "@/components/common/ApplyDialog";
+import ApplySuccessDialog from "@/components/common/ApplySuccessDialog";
 import { AnimatePresence } from "motion/react";
 import { useDialog } from "./DialogContext";
 
@@ -11,6 +12,7 @@ export interface DialogProps {
 // Map dialog types to their components
 const DIALOG_COMPONENTS: Record<string, React.ComponentType<DialogProps>> = {
   apply: ApplyDialog as React.ComponentType<DialogProps>,
+  "apply-success": ApplySuccessDialog as React.ComponentType<DialogProps>,
   // Add more dialog types here as needed
 };
 

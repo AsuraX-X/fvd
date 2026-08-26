@@ -124,6 +124,13 @@ const Header = () => {
                     </p>
                     <ul className="w-full">
                       <li>
+                        <Link href={"/admin/overview"}>
+                          <p className="py-3 w-full text-secondary text-left px-4 hover:bg-secondary/10 transition-colors">
+                            Admin
+                          </p>
+                        </Link>
+                      </li>
+                      <li>
                         <Link href={"/dashboard/experts"}>
                           <p className="py-3 w-full text-secondary text-left px-4 hover:bg-secondary/10 transition-colors">
                             Dashboard

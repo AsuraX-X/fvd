@@ -12,3 +12,16 @@ export async function uploadImageToBlob(
 
   return result.url;
 }
+
+export async function uploadApplicationPortfolio(file: File): Promise<string> {
+  const result = await upload(
+    `applications/${crypto.randomUUID()}/${file.name}`,
+    file,
+    {
+      access: "public",
+      handleUploadUrl: "/api/applications/blob-upload",
+    },
+  );
+
+  return result.url;
+}

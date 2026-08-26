@@ -1,5 +1,8 @@
-import { ArrowRight } from "lucide-react";
+"use client";
+
+import { revokeExpert } from "@/app/admin/experts/actions";
 import Link from "next/link";
+import { useState, useTransition } from "react";
 
 const ExpertCard = ({
   name,
@@ -14,8 +17,21 @@ const ExpertCard = ({
   bio: string;
   id: string;
 }) => {
+  const [isPending, startTransition] = useTransition();
+  const [error, setError] = useState("");
+
+  const handleRevoke = () => {
+    setError("");
+    startTransition(async () => {
+      const result = await revokeExpert(id);
+      if (!result.success) {
+        setError(result.message);
+      }
+    });
+  };
+
   return (
-    <div className="text-sm bg-primary-light p-4 rounded-2xl">
+    <div className="text-sm bg-primary-light space-y-3 p-4 rounded-2xl">
       <div>
         <p>{name}</p>
         <p className="text-body text-xs">
@@ -25,12 +41,27 @@ const ExpertCard = ({
       <div>
         <p>{bio}</p>
       </div>
-      <div>
-        <Link href={`/experts/${id}`}>
-          <p className="flex text-xs gap-0.5 text-body items-center hover:text-secondary transition-colors">
-            View profile <ArrowRight size={14} />
-          </p>
-        </Link>
+      <div className="space-y-2">
+        <div className="space-x-1.5">
+          <Link href={`/experts/${id}`}>
+            <button className="button-secondary text-xs px-2 py-1.5">
+              View profile
+            </button>
+          </Link>
+          <Link href={`/messages/${id}`}>
+            <button className="button-primary text-xs px-2 py-1.5">
+              Message
+            </button>
+          </Link>
+          <button
+            onClick={handleRevoke}
+            disabled={isPending}
+            className="button-secondary hover:text-[#ffa2a2] hover:border-[#ff6467] transition-colors text-xs px-2 py-1.5 disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Revoke Expert
+          </button>
+        </div>
+        {error && <p className="text-xs text-[#ffa2a2]">{error}</p>}
       </div>
     </div>
   );

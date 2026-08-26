@@ -19,7 +19,7 @@ const ApplyDialog = ({ close }: { close: () => void }) => {
           </button>
         </div>
         <h2 className="text-4xl italic mb-6 w-full">Join the expert network</h2>
-        <ApplyForm />
+        <ApplyForm close={close} />
       </div>
     </motion.div>
   );

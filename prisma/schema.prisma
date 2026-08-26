@@ -18,6 +18,12 @@ enum Role {
   USER   @map("user")
 }
 
+enum ApplicationStatus {
+  PENDING  @map("pending")
+  APPROVED @map("approved")
+  REJECTED @map("rejected")
+}
+
 model User {
   id            String    @id
   name          String
@@ -30,6 +36,7 @@ model User {
   accounts      Account[]
   profile       Profile?
   savedExperts  SavedExpert[]
+  application   Application?
 
   @@unique([email])
   @@map("user")
@@ -147,6 +154,40 @@ model SelectedProject {
 
   @@index([profileId])
   @@map("selected_project")
+}
+
+model Application {
+  id           String            @id @default(cuid())
+  name         String
+  email        String
+  specialty    String
+  bio          String
+  portfolioUrl String?
+  status       ApplicationStatus @default(PENDING)
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  userId String? @unique
+  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  links ApplicationLink[]
+
+  @@index([status])
+  @@map("application")
+}
+
+model ApplicationLink {
+  id        String   @id @default(cuid())
+  label     String
+  url       String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+
+  applicationId String
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  @@index([applicationId])
+  @@map("application_link")
 }
 
 model Session {

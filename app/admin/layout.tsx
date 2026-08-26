@@ -1,5 +1,6 @@
 import AdminNav from "@/components/admin/AdminNav";
 import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { ReactNode } from "react";
@@ -16,6 +17,15 @@ const Admin = async ({ children }: { children: ReactNode }) => {
   }
 
   const user = session.user;
+
+  const profile = await prisma.profile.findUnique({
+    where: { userId: user.id },
+    select: { role: true },
+  });
+
+  if (profile?.role !== "ADMIN") {
+    redirect("/dashboard/experts");
+  }
 
   return (
     <main className="py-30 divide-y divide-secondary/10">

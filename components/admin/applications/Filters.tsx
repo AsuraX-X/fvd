@@ -1,11 +1,24 @@
 "use client";
 import { motion } from "motion/react";
-import { useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 const Filters = () => {
   const filters = ["approved", "pending", "rejected"];
 
-  const [filter, setFilter] = useState("");
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const filter = searchParams.get("status") ?? "";
+
+  const setFilter = (value: string) => {
+    const params = new URLSearchParams(searchParams);
+    if (value) {
+      params.set("status", value);
+    } else {
+      params.delete("status");
+    }
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+  };
 
   return (
     <div className="space-x-1">
