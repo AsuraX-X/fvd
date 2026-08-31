@@ -2,6 +2,7 @@
 
 import { toggleSavedExpert } from "@/app/experts/actions";
 import { Star } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
 interface SaveExpertButtonProps {
@@ -21,6 +22,7 @@ const SaveExpertButton = ({
 }: SaveExpertButtonProps) => {
   const [saved, setSaved] = useState(initialSaved);
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
   const handleClick = () => {
     const optimisticSaved = !saved;
@@ -28,7 +30,14 @@ const SaveExpertButton = ({
 
     startTransition(async () => {
       const result = await toggleSavedExpert(expertId);
-      setSaved(result.success ? result.saved : !optimisticSaved);
+
+      if (!result.success) {
+        setSaved(!optimisticSaved);
+        router.push("/account?signin=true");
+        return;
+      }
+
+      setSaved(result.saved);
     });
   };
 

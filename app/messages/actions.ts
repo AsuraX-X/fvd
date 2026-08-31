@@ -50,7 +50,9 @@ export type GetMessagesState =
 
 async function getCallerProfile() {
   const session = await auth.api.getSession({ headers: await headers() });
-  if (!session) return { session: null, profile: null };
+  if (!session || !session.user.emailVerified) {
+    return { session: null, profile: null };
+  }
 
   const profile = await prisma.profile.findUnique({
     where: { userId: session.user.id },

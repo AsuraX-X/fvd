@@ -1,6 +1,8 @@
 import { getConversations } from "@/app/messages/actions";
 import ConversationEntry from "@/components/dashboard/messages/ConversationEntry";
 
+export const metadata = { title: "Messages" };
+
 function formatDate(date: Date) {
   return new Date(date).toLocaleDateString("en-US");
 }

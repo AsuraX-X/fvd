@@ -9,7 +9,7 @@ const AdminNav = () => {
 
   return (
     <nav className="my-4">
-      <ul className="flex">
+      <ul className="flex overflow-scroll">
         {adminLinks.map(({ label, link }) => (
           <li key={label}>
             <Link href={link}>

@@ -3,6 +3,13 @@ import SigninForm from "@/components/signin/SigninForm";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
+export const metadata = {
+  title: "Sign in",
+  description: "Sign in or create an account on FVD.",
+  alternates: { canonical: "/account" },
+  robots: { index: false, follow: true },
+};
+
 type PageProps = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 };

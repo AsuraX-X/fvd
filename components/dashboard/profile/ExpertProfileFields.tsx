@@ -1,6 +1,7 @@
 "use client";
 
 import { uploadImageToBlob } from "@/lib/blob-upload";
+import { Trash } from "lucide-react";
 import { useRef, useState } from "react";
 
 type LinkRow = { key: string; label: string; url: string };
@@ -66,7 +67,13 @@ const ExpertProfileFields = ({
         ? prev
         : [
             ...prev,
-            { key: nextKey(), title: "", url: "", imageUrl: "", uploading: false },
+            {
+              key: nextKey(),
+              title: "",
+              url: "",
+              imageUrl: "",
+              uploading: false,
+            },
           ],
     );
   };
@@ -168,7 +175,7 @@ const ExpertProfileFields = ({
                 onClick={() => removeLink(link.key)}
                 className="uppercase text-xs text-body hover:text-[#d35555] transition-colors"
               >
-                Remove
+                <Trash size={16}/>
               </button>
             </div>
           ))}
@@ -176,7 +183,7 @@ const ExpertProfileFields = ({
       </div>
 
       <div>
-        <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center flex-wrap gap-2 justify-between mb-2">
           <p className="form-label">
             Selected projects ({projects.length}/{MAX_PROJECTS})
           </p>

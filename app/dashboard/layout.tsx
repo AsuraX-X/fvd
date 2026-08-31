@@ -5,6 +5,11 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { ReactNode } from "react";
 
+export const metadata = {
+  title: { default: "Dashboard", template: "%s | Dashboard" },
+  robots: { index: false, follow: false },
+};
+
 const Dashboard = async ({ children }: { children: ReactNode }) => {
   const headersList = await headers();
 
@@ -12,7 +17,7 @@ const Dashboard = async ({ children }: { children: ReactNode }) => {
     headers: headersList,
   });
 
-  if (!session) {
+  if (!session || !session.user.emailVerified) {
     redirect("/account?signin=true");
   }
 
@@ -38,7 +43,7 @@ const Dashboard = async ({ children }: { children: ReactNode }) => {
       <section>
         <div className="max-w-7xl px-8 py-20 mx-auto">
           <p className="small-header">Your space</p>
-          <h1 className="text-6xl italic">{user.name || user.email}</h1>
+          <h1 className="sm:text-6xl text-5xl italic">{user.name || user.email}</h1>
           <p className="bg-primary-light rounded-full border border-secondary/20 w-fit py-1 px-2 mt-4 uppercase text-xs">
             {displayRole}
           </p>

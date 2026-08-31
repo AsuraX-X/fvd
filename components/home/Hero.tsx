@@ -13,9 +13,9 @@ const Hero = () => {
           value through sensory experiences that linger long after the first
           impression.
         </p>
-        <div className="flex gap-4 w-fit lg:gap-6">
+        <div className="flex gap-4 w-fit md:flex-row flex-col lg:gap-6">
           <Link href={"/experts"}>
-            <button className="button-primary shrink-0">Hire an expert</button>
+            <button className="button-primary">Hire an expert</button>
           </Link>
           <ApplyBtn
             content="Apply as an expert"

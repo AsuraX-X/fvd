@@ -4,6 +4,7 @@ import SaveExpertButton from "@/components/experts/SaveExpertButton";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
+import { Metadata } from "next";
 import { headers } from "next/headers";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -12,10 +13,57 @@ type PageProps = {
   params: Promise<{ id: string }>;
 };
 
+export const generateMetadata = async ({
+  params,
+}: PageProps): Promise<Metadata> => {
+  const { id } = await params;
+
+  const profile = await prisma.profile.findUnique({
+    where: { id },
+    select: {
+      firstName: true,
+      surname: true,
+      specialty: true,
+      headline: true,
+      bio: true,
+      avatar: true,
+      role: true,
+    },
+  });
+
+  if (!profile || profile.role !== "EXPERT") {
+    return { title: "Expert not found" };
+  }
+
+  const name = `${profile.firstName} ${profile.surname}`.trim();
+  const title = profile.specialty ? `${name} — ${profile.specialty}` : name;
+  const description =
+    profile.headline || profile.bio || `View ${name}'s expert profile on FVD.`;
+
+  return {
+    title,
+    description,
+    alternates: { canonical: `/experts/${id}` },
+    openGraph: {
+      title,
+      description,
+      url: `/experts/${id}`,
+      images: profile.avatar ? [profile.avatar] : ["/home/hero.png"],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: profile.avatar ? [profile.avatar] : ["/home/hero.png"],
+    },
+  };
+};
+
 const page = async ({ params }: PageProps) => {
   const { id } = await params;
 
   const session = await auth.api.getSession({ headers: await headers() });
+  const verifiedSession = session?.user.emailVerified ? session : null;
 
   const profile = await prisma.profile.findUnique({
     where: { id },
@@ -29,10 +77,12 @@ const page = async ({ params }: PageProps) => {
     notFound();
   }
 
-  const isSaved = session
+  const isSaved = verifiedSession
     ? Boolean(
         await prisma.savedExpert.findUnique({
-          where: { userId_expertId: { userId: session.user.id, expertId: id } },
+          where: {
+            userId_expertId: { userId: verifiedSession.user.id, expertId: id },
+          },
         }),
       )
     : false;

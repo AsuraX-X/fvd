@@ -24,6 +24,12 @@ enum ApplicationStatus {
   REJECTED @map("rejected")
 }
 
+enum EnquiryStatus {
+  NEW      @map("new")
+  READ     @map("read")
+  ARCHIVED @map("archived")
+}
+
 model User {
   id            String    @id
   name          String
@@ -37,6 +43,7 @@ model User {
   profile       Profile?
   savedExperts  SavedExpert[]
   application   Application?
+  enquiries     Enquiry[]
 
   @@unique([email])
   @@map("user")
@@ -188,6 +195,22 @@ model ApplicationLink {
 
   @@index([applicationId])
   @@map("application_link")
+}
+
+model Enquiry {
+  id        String        @id @default(cuid())
+  name      String
+  email     String
+  brief     String
+  status    EnquiryStatus @default(NEW)
+  createdAt DateTime      @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([status])
+  @@map("enquiry")
 }
 
 model Session {

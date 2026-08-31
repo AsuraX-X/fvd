@@ -9,6 +9,11 @@ export type ApplyFormState = {
   message: string;
 } | null;
 
+export type EnquiryFormState =
+  | { success: true; message: string }
+  | { success: false; message: string; code?: "UNAUTHENTICATED" }
+  | null;
+
 type LinkRow = { label: string; url: string };
 
 function parseLinkRows(formData: FormData): LinkRow[] {
@@ -80,5 +85,37 @@ export async function submitApplication(
   return {
     success: true,
     message: "Thanks for applying — we'll be in touch soon.",
+  };
+}
+
+export async function submitEnquiry(
+  _prevState: EnquiryFormState,
+  formData: FormData,
+): Promise<EnquiryFormState> {
+  const session = await auth.api.getSession({ headers: await headers() });
+
+  if (!session || !session.user.emailVerified) {
+    return {
+      success: false,
+      message: "You must be signed in to send an enquiry.",
+      code: "UNAUTHENTICATED",
+    };
+  }
+
+  const name = String(formData.get("name") || "").trim();
+  const email = String(formData.get("email") || "").trim();
+  const brief = String(formData.get("brief") || "").trim();
+
+  if (!name || !email || !brief) {
+    return { success: false, message: "Please fill in all required fields." };
+  }
+
+  await prisma.enquiry.create({
+    data: { name, email, brief, userId: session.user.id },
+  });
+
+  return {
+    success: true,
+    message: "Thanks for reaching out — we'll be in touch soon.",
   };
 }

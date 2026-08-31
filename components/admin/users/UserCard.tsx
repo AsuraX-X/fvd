@@ -31,39 +31,39 @@ const UserCard = ({
 
   return (
     <div className="text-sm bg-primary-light p-4 rounded-2xl space-y-2">
-      <div className="flex justify-between items-center">
-        <div>
-          <p>{name}</p>
-          <p className="text-xs text-body">{email}</p>
-        </div>
-        <div className="flex items-center gap-2">
+      <div className="flex justify-between gap-2 flex-col md:flex-row md:items-center">
+        <div className="flex flex-1 justify-between items-center">
+          <div>
+            <p>{name}</p>
+            <p className="text-xs text-body">{email}</p>
+          </div>
           <div className="uppercase px-2 py-1 rounded-full text-xs bg-secondary/10">
             {role}
           </div>
-          <div className="space-x-2">
-            <Link href={`/messages/${id}`}>
-              <button className="button-secondary px-2 py-1.5 text-xs">
-                Message
-              </button>
-            </Link>
-            {role !== "admin" && (
-              <button
-                disabled={isPending}
-                onClick={() => changeRole(role === "expert" ? "USER" : "EXPERT")}
-                className={`button-secondary px-2 py-1.5 text-xs disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed ${role === "expert" && "hover:text-[#ffa2a2] hover:border-[#ff6467] transition-colors"}`}
-              >
-                {role === "expert" ? "Revoke expert" : "Make expert"}
-              </button>
-            )}
+        </div>
+        <div className="flex items-center gap-2 flex-wrap">
+          <Link href={`/messages/${id}`}>
+            <button className="button-secondary px-2 py-1.5 text-xs">
+              Message
+            </button>
+          </Link>
+          {role !== "admin" && (
             <button
               disabled={isPending}
-              onClick={() => changeRole(role === "admin" ? "USER" : "ADMIN")}
-              className={`button-secondary px-2 py-1.5 text-xs disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed ${role === "admin" && "hover:text-[#ffa2a2] hover:border-[#ff6467] transition-colors"}`}
+              onClick={() => changeRole(role === "expert" ? "USER" : "EXPERT")}
+              className={`button-secondary px-2 py-1.5 text-xs disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed ${role === "expert" && "hover:text-[#ffa2a2] hover:border-[#ff6467] transition-colors"}`}
             >
-              {" "}
-              {role === "admin" ? "Revoke Admin" : "Make admin"}
+              {role === "expert" ? "Revoke expert" : "Make expert"}
             </button>
-          </div>
+          )}
+          <button
+            disabled={isPending}
+            onClick={() => changeRole(role === "admin" ? "USER" : "ADMIN")}
+            className={`button-secondary px-2 py-1.5 text-xs disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed ${role === "admin" && "hover:text-[#ffa2a2] hover:border-[#ff6467] transition-colors"}`}
+          >
+            {" "}
+            {role === "admin" ? "Revoke Admin" : "Make admin"}
+          </button>
         </div>
       </div>
       {error && <p className="text-xs text-[#ffa2a2] text-right">{error}</p>}

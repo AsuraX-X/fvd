@@ -3,6 +3,8 @@ import UserCard from "@/components/admin/users/UserCard";
 import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 
+export const metadata = { title: "Users" };
+
 const page = async ({
   searchParams,
 }: {
@@ -28,10 +30,10 @@ const page = async ({
 
   return (
     <div>
-      <div>
+      <div className="w-full">
         <SearchInput
           placeholder="Search by name, skill..."
-          className="border text-sm border-primary-lighter/50 px-4 w-80 py-2 rounded-full focus:border-primary-lighter transition-colors focus:outline-0"
+          className="border text-sm border-primary-lighter/50 px-4 sm:w-80 w-full py-2 rounded-full focus:border-primary-lighter transition-colors focus:outline-0"
         />
       </div>
       {users.length === 0 ? (

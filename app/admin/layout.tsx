@@ -5,6 +5,11 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { ReactNode } from "react";
 
+export const metadata = {
+  title: { default: "Admin", template: "%s | Admin" },
+  robots: { index: false, follow: false },
+};
+
 const Admin = async ({ children }: { children: ReactNode }) => {
   const headersList = await headers();
 
@@ -12,7 +17,7 @@ const Admin = async ({ children }: { children: ReactNode }) => {
     headers: headersList,
   });
 
-  if (!session) {
+  if (!session || !session.user.emailVerified) {
     redirect("/account?signin=true");
   }
 

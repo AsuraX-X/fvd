@@ -21,7 +21,7 @@ const Filters = () => {
   };
 
   return (
-    <div className="space-x-1">
+    <div className="flex gap-1 flex-wrap">
       <motion.button
         initial={{
           backgroundColor: "var(--color-primary-light)",
@@ -42,7 +42,7 @@ const Filters = () => {
               : "var(--color-primary-light)",
         }}
         onClick={() => setFilter("")}
-        className="uppercase rounded-full px-3 py-1 border tracking-widest text-body text-sm"
+        className="uppercase rounded-full px-3 py-1 border tracking-widest text-body text-xs md:text-sm"
       >
         All
       </motion.button>

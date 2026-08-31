@@ -148,7 +148,7 @@ const MessageThread = ({
 
   return (
     <>
-      <div ref={listRef} className="flex-1 px-6 py-4 max-h-[80vh] overflow-scroll">
+      <div ref={listRef} className="flex-1 md:px-6 py-4 max-h-[80vh] overflow-scroll">
         {messagesWithDividers.length === 0 && (
           <p className="text-center text-body text-sm py-10">
             No messages yet — say hello.
@@ -169,7 +169,7 @@ const MessageThread = ({
           );
         })}
       </div>
-      <div className="py-3 px-6">
+      <div className="py-3 md:px-6">
         <div className="py-2 border border-secondary/15 rounded-2xl px-4">
           <div>
             <MessageInput value={content} onChange={setContent} onKeyDown={handleKeyDown} />

@@ -3,6 +3,8 @@ import ExpertCard from "@/components/admin/experts/ExpertCard";
 import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 
+export const metadata = { title: "Experts" };
+
 const page = async ({
   searchParams,
 }: {
@@ -31,7 +33,7 @@ const page = async ({
       <div>
         <SearchInput
           placeholder="Search by name, skill..."
-          className="border text-sm border-primary-lighter/50 px-4 w-80 py-2 rounded-full focus:border-primary-lighter transition-colors focus:outline-0"
+          className="border text-sm border-primary-lighter/50 px-4 sm:w-80 w-full py-2 rounded-full focus:border-primary-lighter transition-colors focus:outline-0"
         />
       </div>
       {experts.length === 0 ? (
@@ -39,7 +41,7 @@ const page = async ({
           No experts match your search.
         </p>
       ) : (
-        <div className="grid grid-cols-2 gap-4 mt-4">
+        <div className="grid md:grid-cols-2 grid-cols-1 gap-4 mt-4">
           {experts.map((expert) => (
             <ExpertCard
               key={expert.id}

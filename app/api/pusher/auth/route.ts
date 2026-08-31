@@ -8,7 +8,7 @@ const CHANNEL_PATTERN = /^private-conversation-(.+)$/;
 export async function POST(request: Request) {
   const session = await auth.api.getSession({ headers: request.headers });
 
-  if (!session) {
+  if (!session || !session.user.emailVerified) {
     return NextResponse.json({ error: "You must be signed in." }, { status: 401 });
   }
 

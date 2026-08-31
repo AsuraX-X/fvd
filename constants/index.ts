@@ -15,6 +15,7 @@ export const adminLinks = [
   { label: "Applications", link: "/admin/applications" },
   { label: "Experts", link: "/admin/experts" },
   { label: "Users", link: "/admin/users" },
+  { label: "Enquiries", link: "/admin/enquiries" },
 ];
 export const quickLinks = [
   { label: "FAQ's", link: "/faqs" },

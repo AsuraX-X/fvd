@@ -14,7 +14,9 @@ import MobileHeader from "./MobileHeader";
 const Header = () => {
   const path = usePathname();
   const { data: session, isPending } = authClient.useSession();
-  const user = (session?.user ?? null) as UserProfile | null;
+  const user = (
+    session?.user.emailVerified ? session.user : null
+  ) as UserProfile | null;
   const loaded = !isPending;
   const role = useRole();
   const [isOpen, setIsOpen] = useState(false);
@@ -114,22 +116,25 @@ const Header = () => {
               <AnimatePresence>
                 {isOpen && (
                   <motion.div
+                    onClick={(e) => e.stopPropagation()}
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: "auto" }}
                     exit={{ opacity: 0, height: 0 }}
-                    className="bg-primary-light  overflow-hidden min-w-60 left-0 mt-4 pt-2 text-sm rounded-2xl absolute top-full"
+                    className="bg-primary-light  overflow-hidden min-w-60 right-0 mt-4 pt-2 text-sm rounded-2xl absolute top-full"
                   >
                     <p className="text-body text-xs py-2 px-4 border-b border-b-secondary/20">
                       {user.email}
                     </p>
                     <ul className="w-full">
-                      <li>
-                        <Link href={"/admin/overview"}>
-                          <p className="py-3 w-full text-secondary text-left px-4 hover:bg-secondary/10 transition-colors">
-                            Admin
-                          </p>
-                        </Link>
-                      </li>
+                      {role === "ADMIN" && (
+                        <li>
+                          <Link href={"/admin/overview"}>
+                            <p className="py-3 w-full text-secondary text-left px-4 hover:bg-secondary/10 transition-colors">
+                              Admin
+                            </p>
+                          </Link>
+                        </li>
+                      )}
                       <li>
                         <Link href={"/dashboard/experts"}>
                           <p className="py-3 w-full text-secondary text-left px-4 hover:bg-secondary/10 transition-colors">
@@ -152,33 +157,7 @@ const Header = () => {
                           aria-busy={signingOut}
                           className={`py-3 w-full text-left px-4 hover:bg-secondary/10 text-secondary transition-colors border-t border-t-secondary/20 ${signingOut ? "opacity-60 pointer-events-none" : ""}`}
                         >
-                          {signingOut ? (
-                            <span className="flex items-center">
-                              <svg
-                                className="animate-spin -ml-1 mr-2 h-4 w-4 text-current"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                              >
-                                <circle
-                                  className="opacity-25"
-                                  cx="12"
-                                  cy="12"
-                                  r="10"
-                                  stroke="currentColor"
-                                  strokeWidth="4"
-                                />
-                                <path
-                                  className="opacity-75"
-                                  fill="currentColor"
-                                  d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                                />
-                              </svg>
-                              Signing out...
-                            </span>
-                          ) : (
-                            "Sign out"
-                          )}
+                          {signingOut ? "Signing out..." : "Sign out"}
                         </button>
                       </li>
                     </ul>
@@ -189,7 +168,13 @@ const Header = () => {
           ) : null}
           {role !== "EXPERT" && role !== "ADMIN" && (
             <button
-              onClick={() => openDialog("apply")}
+              onClick={() => {
+                if (!role) {
+                  router.push("/account?signin=true");
+                  return;
+                }
+                openDialog("enquiry");
+              }}
               className="button-primary"
             >
               Work with us

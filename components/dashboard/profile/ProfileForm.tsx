@@ -92,7 +92,7 @@ const ProfileForm = ({
   return (
     <form
       action={formAction}
-      className="bg-primary-light space-y-8 w-175 p-6 rounded-2xl"
+      className="bg-primary-light space-y-8 max-w-175 p-6 rounded-2xl"
     >
       <div className="flex items-center gap-4">
         <div>
@@ -112,38 +112,40 @@ const ProfileForm = ({
             )}
           </div>
         </div>
-        <div>
-          <label
-            htmlFor="avatar"
-            className="uppercase text-xs bg-secondary/10 px-4 py-2 rounded-full cursor-pointer border border-primary-light hover:border-secondary transition-colors"
+        <div className="flex flex-wrap gap-4">
+          <div>
+            <label
+              htmlFor="avatar"
+              className="uppercase max-w-34 text-nowrap text-xs bg-secondary/10 px-4 py-2 rounded-full cursor-pointer border border-primary-light hover:border-secondary transition-colors"
+            >
+              {avatarUploading
+                ? "Uploading..."
+                : avatarPreview
+                  ? "Change Photo"
+                  : "Upload Photo"}
+            </label>
+            <input
+              className="hidden"
+              type="file"
+              accept="image/*"
+              id="avatar"
+              onChange={(e) => handleAvatarChange(e.target.files?.[0])}
+            />
+            <input type="hidden" name="avatarUrl" value={avatarUrl} />
+          </div>
+          <button
+            type="button"
+            className="button-secondary w-34 px-2 py-1.5 text-xs hover:text-[#ffa2a2] hover:border-[#ff6467] transition-colors uppercase"
           >
-            {avatarUploading
-              ? "Uploading..."
-              : avatarPreview
-                ? "Change Photo"
-                : "Upload Photo"}
-          </label>
-          <input
-            className="hidden"
-            type="file"
-            accept="image/*"
-            id="avatar"
-            onChange={(e) => handleAvatarChange(e.target.files?.[0])}
-          />
-          <input type="hidden" name="avatarUrl" value={avatarUrl} />
+            Remove
+          </button>
         </div>
-        <button
-          type="button"
-          className="uppercase text-xs text-body hover:text-[#d35555] transition-colors"
-        >
-          Remove
-        </button>
       </div>
       <div>
         <p className="form-label">EMAIL</p>
         <p className="text-sm">{email}</p>
       </div>
-      <div className="grid gap-4 grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-4 grid-cols-2">
         <div>
           <label className="form-label" htmlFor="firstName">
             First Name

@@ -2,7 +2,16 @@ import ApplicationMix from "@/components/admin/overview/ApplicationMix";
 import DataCard from "@/components/admin/overview/DataCard";
 import LatestApplications from "@/components/admin/overview/LatestApplications";
 import { prisma } from "@/lib/prisma";
-import { BadgeCheck, CircleX, Clock, ShieldCheck, Users } from "lucide-react";
+import {
+  BadgeCheck,
+  CircleX,
+  Clock,
+  Mail,
+  ShieldCheck,
+  Users,
+} from "lucide-react";
+
+export const metadata = { title: "Overview" };
 
 const page = async () => {
   const [
@@ -12,6 +21,7 @@ const page = async () => {
     pendingCount,
     approvedCount,
     rejectedCount,
+    newEnquiriesCount,
     latestApplications,
   ] = await Promise.all([
     prisma.user.count(),
@@ -20,6 +30,7 @@ const page = async () => {
     prisma.application.count({ where: { status: "PENDING" } }),
     prisma.application.count({ where: { status: "APPROVED" } }),
     prisma.application.count({ where: { status: "REJECTED" } }),
+    prisma.enquiry.count({ where: { status: "NEW" } }),
     prisma.application.findMany({
       orderBy: { createdAt: "desc" },
       take: 4,
@@ -28,7 +39,7 @@ const page = async () => {
 
   return (
     <div>
-      <div className="flex gap-4">
+      <div className="flex gap-4 md:flex-nowrap flex-wrap">
         <DataCard
           data={usersCount}
           label="Users"
@@ -59,9 +70,22 @@ const page = async () => {
           subtitle="with full access"
           Icon={ShieldCheck}
         />
+        <DataCard
+          data={newEnquiriesCount}
+          label="Enquiries"
+          subtitle="new & unread"
+          Icon={Mail}
+        />
       </div>
-      <div className="flex gap-4 pt-4">
-        <div className="flex-6">
+      <div className="flex md:flex-row flex-col gap-4 pt-4">
+              <div className="md:flex-3">
+                <ApplicationMix
+                  approved={approvedCount}
+                  rejected={rejectedCount}
+                  pending={pendingCount}
+                />
+              </div>
+        <div className="md:flex-6">
           <LatestApplications
             applications={latestApplications.map((application) => ({
               id: application.id,
@@ -73,13 +97,6 @@ const page = async () => {
                 | "approved"
                 | "rejected",
             }))}
-          />
-        </div>
-        <div className="flex-3">
-          <ApplicationMix
-            approved={approvedCount}
-            rejected={rejectedCount}
-            pending={pendingCount}
           />
         </div>
       </div>

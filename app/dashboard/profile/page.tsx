@@ -4,6 +4,8 @@ import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
+export const metadata = { title: "Profile" };
+
 const page = async () => {
   const session = await auth.api.getSession({ headers: await headers() });
 

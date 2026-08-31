@@ -4,6 +4,8 @@ import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
+export const metadata = { title: "Saved Experts" };
+
 const page = async () => {
   const session = await auth.api.getSession({ headers: await headers() });
 
@@ -26,7 +28,7 @@ const page = async () => {
   }
 
   return (
-    <div className="grid gap-2 grid-cols-3">
+    <div className="grid gap-2 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3">
       {savedExperts.map(({ expert }) => (
         <ExpertCard
           key={expert.id}

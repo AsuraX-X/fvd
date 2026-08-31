@@ -87,7 +87,7 @@ export async function updateProfile(
 ): Promise<ProfileFormState> {
   const session = await auth.api.getSession({ headers: await headers() });
 
-  if (!session) {
+  if (!session || !session.user.emailVerified) {
     return {
       success: false,
       message: "You must be signed in to update your profile.",
@@ -132,7 +132,7 @@ export async function updateExpertProfile(
 ): Promise<ProfileFormState> {
   const session = await auth.api.getSession({ headers: await headers() });
 
-  if (!session) {
+  if (!session || !session.user.emailVerified) {
     return {
       success: false,
       message: "You must be signed in to update your profile.",

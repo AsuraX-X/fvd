@@ -9,9 +9,9 @@ const DashBoardNav = () => {
 
   return (
     <nav className="my-4">
-      <ul className="flex">
+      <ul className="flex overflow-scroll">
         {dashBoardLinks.map(({ label, link }) => (
-          <li key={label}>
+          <li className="shrink-0" key={label}>
             <Link href={link}>
               <motion.p
                 animate={{

@@ -31,7 +31,7 @@ const ExpertCard = ({
   };
 
   return (
-    <div className="text-sm bg-primary-light space-y-3 p-4 rounded-2xl">
+    <div className="text-sm bg-primary-light w-full space-y-3 p-4 rounded-2xl">
       <div>
         <p>{name}</p>
         <p className="text-body text-xs">
@@ -42,7 +42,7 @@ const ExpertCard = ({
         <p>{bio}</p>
       </div>
       <div className="space-y-2">
-        <div className="space-x-1.5">
+        <div className="flex gap-2 flex-wrap">
           <Link href={`/experts/${id}`}>
             <button className="button-secondary text-xs px-2 py-1.5">
               View profile

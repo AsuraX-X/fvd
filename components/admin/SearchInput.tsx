@@ -40,7 +40,7 @@ const SearchInput = ({
       onChange={(e) => setQuery(e.target.value)}
       className={
         className ??
-        "border text-sm border-primary-lighter/50 px-4 w-80 py-1 rounded-full focus:border-primary-lighter transition-colors focus:outline-0"
+        "border text-sm border-primary-lighter/50 px-4 sm:w-80 w-full py-1 rounded-full focus:border-primary-lighter transition-colors focus:outline-0"
       }
     />
   );

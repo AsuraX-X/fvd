@@ -4,6 +4,8 @@ import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
+export const metadata = { title: "Application" };
+
 const STATUS_LABEL: Record<string, string> = {
   PENDING: "Pending review",
   APPROVED: "Approved",

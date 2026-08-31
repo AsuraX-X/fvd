@@ -5,18 +5,19 @@ import ExpertCard from "./ExpertCard";
 
 const ExpertGrid = async () => {
   const session = await auth.api.getSession({ headers: await headers() });
+  const verifiedSession = session?.user.emailVerified ? session : null;
 
   const experts = await prisma.profile.findMany({
     where: { role: "EXPERT" },
     orderBy: { createdAt: "desc" },
   });
 
-  const savedExpertIds = session
+  const savedExpertIds = verifiedSession
     ? new Set(
         (
           await prisma.savedExpert.findMany({
             where: {
-              userId: session.user.id,
+              userId: verifiedSession.user.id,
               expertId: { in: experts.map((expert) => expert.id) },
             },
             select: { expertId: true },

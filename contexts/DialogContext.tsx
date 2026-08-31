@@ -1,5 +1,11 @@
 "use client";
-import React, { createContext, useCallback, useContext, useState } from "react";
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 export interface DialogConfig {
   id: string;
@@ -35,6 +41,17 @@ export const DialogProvider = ({ children }: { children: React.ReactNode }) => {
   const closeAll = useCallback(() => {
     setDialogs([]);
   }, []);
+
+  const hasOpenDialog = dialogs.length > 0;
+
+  useEffect(() => {
+    if (!hasOpenDialog) return;
+
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [hasOpenDialog]);
 
   return (
     <DialogContext.Provider

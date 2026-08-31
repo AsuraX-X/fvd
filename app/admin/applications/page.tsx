@@ -4,6 +4,8 @@ import SearchInput from "@/components/admin/SearchInput";
 import { ApplicationStatus, Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 
+export const metadata = { title: "Applications" };
+
 const STATUS_FILTERS = ["pending", "approved", "rejected"];
 
 const page = async ({
@@ -35,7 +37,7 @@ const page = async ({
 
   return (
     <div>
-      <div className="flex justify-between">
+      <div className="flex flex-wrap gap-2 justify-between">
         <Filters />
         <SearchInput />
       </div>

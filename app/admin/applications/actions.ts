@@ -12,7 +12,7 @@ export type ApplicationActionState =
 async function requireAdmin() {
   const session = await auth.api.getSession({ headers: await headers() });
 
-  if (!session) {
+  if (!session || !session.user.emailVerified) {
     return null;
   }
 

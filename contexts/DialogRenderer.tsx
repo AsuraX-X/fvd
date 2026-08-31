@@ -1,6 +1,9 @@
 "use client";
 import ApplyDialog from "@/components/common/ApplyDialog";
 import ApplySuccessDialog from "@/components/common/ApplySuccessDialog";
+import EmailVerifiedDialog from "@/components/common/EmailVerifiedDialog";
+import EnquiryDialog from "@/components/common/EnquiryDialog";
+import EnquirySuccessDialog from "@/components/common/EnquirySuccessDialog";
 import { AnimatePresence } from "motion/react";
 import { useDialog } from "./DialogContext";
 
@@ -13,6 +16,9 @@ export interface DialogProps {
 const DIALOG_COMPONENTS: Record<string, React.ComponentType<DialogProps>> = {
   apply: ApplyDialog as React.ComponentType<DialogProps>,
   "apply-success": ApplySuccessDialog as React.ComponentType<DialogProps>,
+  "email-verified": EmailVerifiedDialog as React.ComponentType<DialogProps>,
+  enquiry: EnquiryDialog as React.ComponentType<DialogProps>,
+  "enquiry-success": EnquirySuccessDialog as React.ComponentType<DialogProps>,
   // Add more dialog types here as needed
 };
 

@@ -23,7 +23,7 @@ export async function POST(request: Request) {
           headers: request.headers,
         });
 
-        if (!session) {
+        if (!session || !session.user.emailVerified) {
           throw new Error("You must be signed in to upload images.");
         }
 
