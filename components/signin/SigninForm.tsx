@@ -57,7 +57,7 @@ const SigninForm = ({ signin }: SigninFormProps) => {
         ? await authClient.signIn.email({
             email,
             password,
-            callbackURL: "/dashboard?verified=true",
+            callbackURL: "/",
           })
         : await authClient.signUp.email({
             email,
