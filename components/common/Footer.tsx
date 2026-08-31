@@ -1,8 +1,17 @@
+"use client";
+
 import { links, quickLinks, social } from "@/constants";
+import { useDialog } from "@/contexts/DialogContext";
+import { useRole } from "@/contexts/RoleContext";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Logo from "./Logo";
 
 const Footer = () => {
+  const { openDialog } = useDialog();
+  const role = useRole();
+  const router = useRouter();
+
   return (
     <section className="border-t px-8 border-t-primary-light ">
       <div className=" mx-auto max-w-7xl">
@@ -26,7 +35,17 @@ const Footer = () => {
                   </li>
                 ))}
                 <li>
-                  <button>Contact us</button>
+                  <button
+                    onClick={() => {
+                      if (!role) {
+                        router.push("/account?signin=true");
+                        return;
+                      }
+                      openDialog("enquiry", { briefLabel: "Message" });
+                    }}
+                  >
+                    Contact us
+                  </button>
                 </li>
               </ul>
             </div>

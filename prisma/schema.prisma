@@ -79,7 +79,7 @@ model Profile {
 }
 
 // Role pairing (USER<->EXPERT, or ADMIN<->anyone) is enforced in
-// getOrCreateConversation (app/dashboard/messages/actions.ts), not the DB.
+// getOrCreateConversation (app/messages/actions.ts), not the DB.
 // participantOneId/participantTwoId are role-agnostic and canonically
 // ordered (smaller Profile.id first) so the unique pair is order-independent.
 model Conversation {
@@ -112,9 +112,26 @@ model Message {
   senderId String
   sender   Profile @relation("MessageSender", fields: [senderId], references: [id], onDelete: Cascade)
 
+  attachments MessageAttachment[]
+
   @@index([conversationId, createdAt])
   @@index([conversationId, readAt])
   @@map("message")
+}
+
+model MessageAttachment {
+  id        String   @id @default(cuid())
+  url       String
+  fileName  String
+  size      Int
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+
+  messageId String
+  message   Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  @@index([messageId])
+  @@map("message_attachment")
 }
 
 model SavedExpert {

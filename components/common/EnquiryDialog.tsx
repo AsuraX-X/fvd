@@ -3,7 +3,13 @@ import { X } from "lucide-react";
 import { motion } from "motion/react";
 import EnquiryForm from "./EnquiryForm";
 
-const EnquiryDialog = ({ close }: { close: () => void }) => {
+const EnquiryDialog = ({
+  close,
+  briefLabel,
+}: {
+  close: () => void;
+  briefLabel?: string;
+}) => {
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -23,7 +29,7 @@ const EnquiryDialog = ({ close }: { close: () => void }) => {
           </p>
         </div>
         <div className="bg-primary-light h-full flex-1 place-content-center  px-6 pt-10 pb-4">
-          <EnquiryForm close={close} />
+          <EnquiryForm close={close} briefLabel={briefLabel} />
         </div>
       </div>
     </motion.div>

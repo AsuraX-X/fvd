@@ -1,6 +1,8 @@
 "use client";
 
 import { uploadImageToBlob } from "@/lib/blob-upload";
+import { formatFileSize } from "@/lib/format-file-size";
+import { PROFILE_IMAGE_MAX_BYTES } from "@/lib/upload-limits";
 import { Trash } from "lucide-react";
 import { useRef, useState } from "react";
 
@@ -11,6 +13,7 @@ type ProjectRow = {
   url: string;
   imageUrl: string;
   uploading: boolean;
+  error: string | null;
 };
 
 type ExpertProfileFieldsProps = {
@@ -42,6 +45,7 @@ const ExpertProfileFields = ({
     initialProjects.map((project) => ({
       key: nextKey(),
       uploading: false,
+      error: null,
       ...project,
     })),
   );
@@ -73,6 +77,7 @@ const ExpertProfileFields = ({
               url: "",
               imageUrl: "",
               uploading: false,
+              error: null,
             },
           ],
     );
@@ -88,9 +93,25 @@ const ExpertProfileFields = ({
   ) => {
     if (!file) return;
 
+    if (file.size > PROFILE_IMAGE_MAX_BYTES) {
+      setProjects((prev) =>
+        prev.map((project) =>
+          project.key === key
+            ? {
+                ...project,
+                error: `File exceeds the ${formatFileSize(PROFILE_IMAGE_MAX_BYTES)} limit.`,
+              }
+            : project,
+        ),
+      );
+      return;
+    }
+
     setProjects((prev) =>
       prev.map((project) =>
-        project.key === key ? { ...project, uploading: true } : project,
+        project.key === key
+          ? { ...project, uploading: true, error: null }
+          : project,
       ),
     );
     adjustUploadingCount(1);
@@ -228,6 +249,9 @@ const ExpertProfileFields = ({
                 }
                 className="text-xs w-full"
               />
+              {project.error && (
+                <p className="text-xs text-[#d35555]">{project.error}</p>
+              )}
               <input
                 type="text"
                 name={`projects[${index}][title]`}

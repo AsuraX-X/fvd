@@ -9,6 +9,8 @@ import AvatarImage from "@/components/common/AvatarImage";
 import ExpertProfileFields from "@/components/dashboard/profile/ExpertProfileFields";
 import { authClient } from "@/lib/auth-client";
 import { uploadImageToBlob } from "@/lib/blob-upload";
+import { formatFileSize } from "@/lib/format-file-size";
+import { PROFILE_IMAGE_MAX_BYTES } from "@/lib/upload-limits";
 import { useActionState, useEffect, useRef, useState } from "react";
 
 type ProfileFormProps = {
@@ -49,11 +51,18 @@ const ProfileForm = ({
   const [avatarUrl, setAvatarUrl] = useState(profile.avatar ?? "");
   const [avatarPreview, setAvatarPreview] = useState(profile.avatar ?? "");
   const [avatarUploading, setAvatarUploading] = useState(false);
+  const [avatarError, setAvatarError] = useState<string | null>(null);
   const [expertUploading, setExpertUploading] = useState(false);
 
   const handleAvatarChange = async (file: File | undefined) => {
     if (!file) return;
 
+    if (file.size > PROFILE_IMAGE_MAX_BYTES) {
+      setAvatarError(`File exceeds the ${formatFileSize(PROFILE_IMAGE_MAX_BYTES)} limit.`);
+      return;
+    }
+
+    setAvatarError(null);
     setAvatarPreview(URL.createObjectURL(file));
     setAvatarUploading(true);
     try {
@@ -78,10 +87,6 @@ const ProfileForm = ({
     // 3. Directly update the DOM element to show the new count
     setChar(currentLength);
   };
-
-  useEffect(() => {
-    console.log(char);
-  }, [char]);
 
   useEffect(() => {
     if (state?.success) {
@@ -132,6 +137,9 @@ const ProfileForm = ({
               onChange={(e) => handleAvatarChange(e.target.files?.[0])}
             />
             <input type="hidden" name="avatarUrl" value={avatarUrl} />
+            {avatarError && (
+              <p className="text-xs text-[#d35555] mt-1">{avatarError}</p>
+            )}
           </div>
           <button
             type="button"

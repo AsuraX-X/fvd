@@ -7,7 +7,13 @@ import { useActionState, useEffect } from "react";
 
 const initialState: EnquiryFormState = null;
 
-const EnquiryForm = ({ close }: { close: () => void }) => {
+const EnquiryForm = ({
+  close,
+  briefLabel = "Project brief",
+}: {
+  close: () => void;
+  briefLabel?: string;
+}) => {
   const { openDialog } = useDialog();
   const router = useRouter();
   const [state, formAction, isPending] = useActionState(
@@ -53,7 +59,7 @@ const EnquiryForm = ({ close }: { close: () => void }) => {
       </div>
       <div>
         <label className="form-label mb-2" htmlFor="enquiry-brief">
-          Project brief *
+          {briefLabel} *
         </label>
         <textarea
           className="text-sm w-full resize-none border border-secondary/20 focus-visible:border-secondary transition-colors focus-visible:outline-none rounded-lg p-2"

@@ -25,3 +25,21 @@ export async function uploadApplicationPortfolio(file: File): Promise<string> {
 
   return result.url;
 }
+
+export type UploadedAttachment = { url: string; fileName: string; size: number };
+
+export async function uploadMessageAttachment(
+  conversationId: string,
+  file: File,
+): Promise<UploadedAttachment> {
+  const result = await upload(
+    `messages/${conversationId}/${crypto.randomUUID()}-${file.name}`,
+    file,
+    {
+      access: "public",
+      handleUploadUrl: "/api/messages/blob-upload",
+    },
+  );
+
+  return { url: result.url, fileName: file.name, size: file.size };
+}

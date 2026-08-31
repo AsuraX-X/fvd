@@ -3,10 +3,20 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { pusherServer } from "@/lib/pusher";
+import { MESSAGE_ATTACHMENTS_MAX_TOTAL_BYTES } from "@/lib/upload-limits";
+import { formatFileSize } from "@/lib/format-file-size";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 
 const MAX_MESSAGE_LENGTH = 4000;
+const MAX_ATTACHMENTS = 5;
+
+export type MessageAttachmentRow = {
+  id: string;
+  url: string;
+  fileName: string;
+  size: number;
+};
 
 export type MessageRow = {
   id: string;
@@ -14,7 +24,10 @@ export type MessageRow = {
   createdAt: Date;
   readAt: Date | null;
   senderId: string;
+  attachments: MessageAttachmentRow[];
 };
+
+export type NewAttachment = { url: string; fileName: string; size: number };
 
 export type GetOrCreateConversationState =
   | { success: true; conversationId: string }
@@ -120,6 +133,7 @@ export async function getOrCreateConversation(
 export async function sendMessage(
   conversationId: string,
   content: string,
+  attachments: NewAttachment[] = [],
 ): Promise<SendMessageState> {
   const { session, profile: caller } = await getCallerProfile();
 
@@ -144,15 +158,33 @@ export async function sendMessage(
   }
 
   const trimmed = content.trim();
-  if (!trimmed) {
+  if (!trimmed && attachments.length === 0) {
     return { success: false, message: "Message cannot be empty." };
   }
   if (trimmed.length > MAX_MESSAGE_LENGTH) {
     return { success: false, message: "Message is too long." };
   }
+  if (attachments.length > MAX_ATTACHMENTS) {
+    return { success: false, message: `You can attach up to ${MAX_ATTACHMENTS} files.` };
+  }
+  const totalAttachmentBytes = attachments.reduce((sum, a) => sum + a.size, 0);
+  if (totalAttachmentBytes > MESSAGE_ATTACHMENTS_MAX_TOTAL_BYTES) {
+    return {
+      success: false,
+      message: `Attachments can't exceed ${formatFileSize(MESSAGE_ATTACHMENTS_MAX_TOTAL_BYTES)} combined.`,
+    };
+  }
 
   const message = await prisma.message.create({
-    data: { conversationId, senderId: caller.id, content: trimmed },
+    data: {
+      conversationId,
+      senderId: caller.id,
+      content: trimmed,
+      attachments: {
+        create: attachments.map((attachment, index) => ({ ...attachment, order: index })),
+      },
+    },
+    include: { attachments: { orderBy: { order: "asc" } } },
   });
 
   try {
@@ -161,6 +193,7 @@ export async function sendMessage(
       content: message.content,
       createdAt: message.createdAt,
       senderId: message.senderId,
+      attachments: message.attachments,
     });
   } catch (error) {
     console.error("Failed to publish new-message event to Pusher", error);
@@ -280,7 +313,14 @@ export async function getMessages(conversationId: string): Promise<GetMessagesSt
   const messages = await prisma.message.findMany({
     where: { conversationId },
     orderBy: { createdAt: "asc" },
-    select: { id: true, content: true, createdAt: true, readAt: true, senderId: true },
+    select: {
+      id: true,
+      content: true,
+      createdAt: true,
+      readAt: true,
+      senderId: true,
+      attachments: { orderBy: { order: "asc" } },
+    },
   });
 
   return { success: true, messages };

@@ -2,6 +2,8 @@
 
 import { submitApplication, type ApplyFormState } from "./actions";
 import { uploadApplicationPortfolio } from "@/lib/blob-upload";
+import { formatFileSize } from "@/lib/format-file-size";
+import { APPLICATION_PORTFOLIO_MAX_BYTES } from "@/lib/upload-limits";
 import { useDialog } from "@/contexts/DialogContext";
 import { useActionState, useEffect, useState } from "react";
 
@@ -18,6 +20,7 @@ const ApplyForm = ({ close }: { close: () => void }) => {
   const [portfolioFile, setPortfolioFile] = useState<File | null>(null);
   const [portfolioUrl, setPortfolioUrl] = useState("");
   const [portfolioUploading, setPortfolioUploading] = useState(false);
+  const [portfolioError, setPortfolioError] = useState<string | null>(null);
   const [state, formAction, isPending] = useActionState(
     submitApplication,
     initialState,
@@ -31,12 +34,23 @@ const ApplyForm = ({ close }: { close: () => void }) => {
   }, [state, close, openDialog]);
 
   const handlePortfolioChange = async (file: File | undefined) => {
-    setPortfolioFile(file ?? null);
     if (!file) {
+      setPortfolioFile(null);
       setPortfolioUrl("");
+      setPortfolioError(null);
       return;
     }
 
+    if (file.size > APPLICATION_PORTFOLIO_MAX_BYTES) {
+      setPortfolioError(
+        `File exceeds the ${formatFileSize(APPLICATION_PORTFOLIO_MAX_BYTES)} limit.`,
+      );
+      return;
+    }
+
+    setPortfolioFile(file);
+    setPortfolioUrl("");
+    setPortfolioError(null);
     setPortfolioUploading(true);
     try {
       const url = await uploadApplicationPortfolio(file);
@@ -166,6 +180,9 @@ const ApplyForm = ({ close }: { close: () => void }) => {
             <span className="text-sm text-body">{portfolioFile.name}</span>
           )}
         </div>
+        {portfolioError && (
+          <p className="text-xs text-[#d35555] mt-1">{portfolioError}</p>
+        )}
         <input
           className="hidden"
           type="file"
