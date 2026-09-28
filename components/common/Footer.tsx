@@ -1,10 +1,10 @@
 "use client";
 
-import { links, quickLinks, social } from "@/constants";
+import { quickLinks, social, studio } from "@/constants";
 import { useDialog } from "@/contexts/DialogContext";
 import { useRole } from "@/contexts/RoleContext";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Logo from "./Logo";
 
 const Footer = () => {
@@ -54,7 +54,7 @@ const Footer = () => {
                 Studio
               </h5>
               <ul className="space-y-3 text-sm text-body">
-                {links.map(({ label, link }) => (
+                {studio.map(({ label, link }) => (
                   <li key={label}>
                     <Link href={link}>{label}</Link>
                   </li>
@@ -70,7 +70,9 @@ const Footer = () => {
           <ul className="flex order-1 gap-4 text-sm lg:order-2 lg:w-fit w-full text-body">
             {social.map(({ label, link }) => (
               <li key={label}>
-                <a href={link}>{label}</a>
+                <a target="_blank" href={link}>
+                  {label}
+                </a>
               </li>
             ))}
           </ul>

@@ -4,6 +4,10 @@ export const links = [
   { label: "Services", link: "/services" },
   { label: "About", link: "/about" },
 ];
+export const studio = [
+  { label: "Home", link: "/" },
+  { label: "Services", link: "/services" },
+];
 export const dashBoardLinks = [
   { label: "Saved experts", link: "/dashboard/experts" },
   { label: "Messages", link: "/dashboard/messages" },
@@ -23,9 +27,9 @@ export const quickLinks = [
   { label: "Experts", link: "/experts" },
 ];
 export const social = [
-  { label: "Instagram", link: "" },
-  { label: "LinkedIn", link: "" },
-  { label: "X (Twitter)", link: "" },
+  { label: "Instagram", link: "https://www.instagram.com/fvdlance" },
+  { label: "TikTok", link: "https://www.tiktok.com/@fvdlance1" },
+  { label: "Gumroad", link: "https://lancefire610.gumroad.com" },
 ];
 export const strats = [
   "Visual Identity Guide",

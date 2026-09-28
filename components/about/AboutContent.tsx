@@ -79,7 +79,7 @@ const AboutContent = () => {
             </span>
           </p>
           <div>
-            <ul className="grid grid-cols-2 list-disc text-body gap-2">
+            <ul className="grid grid-cols-2 list-disc list-inside text-body gap-2">
               {whos.map((who, i) => (
                 <li key={i} className="text-sm">
                   {who}
