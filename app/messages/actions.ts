@@ -144,6 +144,9 @@ export async function sendMessage(
   if (!session) {
     return { success: false, message: "You must be signed in to send messages." };
   }
+  if (!hasAcceptedTerms(session.user)) {
+    return { success: false, message: TERMS_REQUIRED_MESSAGE };
+  }
   if (!caller) {
     return { success: false, message: "Your profile could not be found." };
   }

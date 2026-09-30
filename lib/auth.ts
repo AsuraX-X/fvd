@@ -75,6 +75,16 @@ export const auth = betterAuth({
           };
         },
       },
+      update: {
+        before: async (user) => {
+          // `termsVersion` is `input: true` for sign-up, which also lets
+          // /update-user set it. Acceptance only happens via the acceptTerms
+          // action (a direct Prisma write), so strip it from better-auth updates.
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { termsVersion, termsAcceptedAt, ...data } = user;
+          return { data };
+        },
+      },
     },
   },
   plugins: [dash()],
