@@ -15,6 +15,7 @@ export const TRUSTED_ORIGINS = (process.env.TRUSTED_ORIGINS || BASE_URL)
   .map((s) => s.trim());
 
 export const auth = betterAuth({
+  appName: "FVDLance",
   database: prismaAdapter(prisma, { provider: "postgresql" }),
   baseURL: BASE_URL,
   trustedOrigins: TRUSTED_ORIGINS,
@@ -22,6 +23,11 @@ export const auth = betterAuth({
     // Fetch related rows (e.g. session + user on /get-session) in one Prisma
     // query via `include` instead of separate round trips.
     database: { joins: true },
+    // Vercel's edge overwrites these with the real client IP, so rate limiting
+    // keys per-visitor instead of lumping everyone into one bucket.
+    ipAddress: {
+      ipAddressHeaders: ["x-vercel-forwarded-for", "x-forwarded-for"],
+    },
   },
   emailAndPassword: {
     enabled: true,
