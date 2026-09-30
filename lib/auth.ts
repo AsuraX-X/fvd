@@ -18,6 +18,11 @@ export const auth = betterAuth({
   database: prismaAdapter(prisma, { provider: "postgresql" }),
   baseURL: BASE_URL,
   trustedOrigins: TRUSTED_ORIGINS,
+  advanced: {
+    // Fetch related rows (e.g. session + user on /get-session) in one Prisma
+    // query via `include` instead of separate round trips.
+    database: { joins: true },
+  },
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,
