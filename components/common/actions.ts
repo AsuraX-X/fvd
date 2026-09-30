@@ -2,6 +2,11 @@
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import {
+  hasAcceptedTerms,
+  TERMS_REQUIRED_MESSAGE,
+  TERMS_VERSION,
+} from "@/lib/terms";
 import { headers } from "next/headers";
 
 export type ApplyFormState = {
@@ -51,7 +56,20 @@ export async function submitApplication(
     return { success: false, message: "Please fill in all required fields." };
   }
 
+  // Applications can be sent without an account, so consent is collected on
+  // the form itself rather than relying on the account's acceptance.
+  if (formData.get("accept") !== "on") {
+    return { success: false, message: TERMS_REQUIRED_MESSAGE };
+  }
+
   const session = await auth.api.getSession({ headers: await headers() });
+
+  if (session && !hasAcceptedTerms(session.user)) {
+    await prisma.user.update({
+      where: { id: session.user.id },
+      data: { termsVersion: TERMS_VERSION, termsAcceptedAt: new Date() },
+    });
+  }
 
   const existing = session
     ? await prisma.application.findFirst({
@@ -100,6 +118,10 @@ export async function submitEnquiry(
       message: "You must be signed in to send an enquiry.",
       code: "UNAUTHENTICATED",
     };
+  }
+
+  if (!hasAcceptedTerms(session.user)) {
+    return { success: false, message: TERMS_REQUIRED_MESSAGE };
   }
 
   const name = String(formData.get("name") || "").trim();

@@ -1,0 +1,211 @@
+FVDLANCE TERMS OF SERVICE
+
+DRAFT - NOT YET REVIEWED BY A LAWYER. Items in [BRACKETS] must be filled in.
+
+Last updated: [DATE]
+
+
+1. ABOUT THESE TERMS
+
+These Terms of Service ("Terms") govern your use of the FVDlance website at
+[DOMAIN] (the "Platform"), operated by [LEGAL ENTITY NAME], [REGISTERED
+ADDRESS] ("FVDlance", "we", "us", "our").
+
+By creating an account or using the Platform, you agree to these Terms and to
+our Privacy Policy. If you do not agree, do not use the Platform.
+
+
+2. WHAT FVDLANCE DOES
+
+FVDlance is a platform that helps clients find, contact and review creative
+experts. We provide a directory of expert profiles, messaging between users,
+and reviews.
+
+FVDlance is not a party to any agreement between a client and an expert. We
+do not employ experts, we do not act as an agent for either side, and we do
+not guarantee the quality, safety, legality or timeliness of any work or
+payment. Any agreement about scope, price, deadlines, payment, ownership of
+work or refunds is solely between the client and the expert.
+
+[IF PAYMENTS OR COMMISSIONS ARE ADDED LATER, THIS SECTION MUST BE REVISED.]
+
+
+3. ELIGIBILITY AND ACCOUNTS
+
+3.1 You must be at least [16 / 18] years old, and able to form a legally
+binding contract, to use the Platform.
+
+3.2 You must give accurate information when you create your account and keep
+it up to date. You must verify your email address before using certain
+features, such as saving experts, leaving reviews and messaging.
+
+3.3 You are responsible for keeping your password secure and for all activity
+on your account. Tell us immediately at [CONTACT EMAIL] if you suspect
+unauthorised use.
+
+3.4 You may have only one account, and you may not create an account on
+someone else's behalf without their permission.
+
+
+4. EXPERTS
+
+4.1 To be listed as an expert you must apply through the Platform. We may
+approve or reject applications at our discretion and are not required to give
+reasons.
+
+4.2 By applying, you confirm that the information and portfolio work you
+submit are accurate and that you have the right to show them.
+
+4.3 Once approved, your name, profile, portfolio work and reviews will be
+displayed publicly. You can hide your profile from the public directory at
+any time from your dashboard.
+
+4.4 We may remove an expert from the directory, or revoke expert status, if
+we reasonably believe the expert has breached these Terms, misrepresented
+their skills or work, received credible complaints, or no longer meets our
+standards. [ADD LINK TO SEPARATE EXPERT STANDARDS DOCUMENT IF CREATED.]
+
+
+5. YOUR CONTENT
+
+5.1 "Your Content" means anything you post or upload to the Platform,
+including profile information, avatars, portfolio images, links, messages,
+attachments, applications and reviews.
+
+5.2 You keep ownership of Your Content. By posting it, you grant FVDlance a
+worldwide, non-exclusive, royalty-free licence to host, store, reproduce,
+display and adapt (for example resize or crop) Your Content, only as needed to
+operate, promote and improve the Platform. For public content such as expert
+profiles and portfolio work, this includes displaying it on the Platform and
+in [SOCIAL MEDIA / MARKETING - CONFIRM IF DESIRED]. This licence ends when you
+delete the content or your account, except for:
+  - reviews, which remain on the Platform shown as "Former member"; and
+  - copies we must keep for legal reasons or that remain for a limited time in
+    backups.
+
+5.3 You confirm that you own Your Content or have all the rights needed to
+post it, and that it does not infringe anyone else's rights.
+
+5.4 We do not review all content before it is posted, but we may remove any
+content that we reasonably believe breaches these Terms.
+
+
+6. ACCEPTABLE USE
+
+You must not use the Platform to:
+
+a) post anything unlawful, defamatory, harassing, threatening, hateful,
+   sexually explicit, or that infringes someone else's intellectual property
+   or privacy;
+b) upload malware or files designed to harm or gain unauthorised access to
+   any system;
+c) send spam, unsolicited advertising or bulk messages;
+d) impersonate any person or misrepresent your identity, qualifications or
+   work;
+e) post fake, misleading or incentivised reviews, review yourself, or review
+   an expert you have not genuinely dealt with;
+f) scrape, crawl or harvest data from the Platform, or use it to collect
+   other users' contact details, except as needed to communicate about a
+   genuine project;
+g) attempt to bypass security, access other users' accounts, messages or
+   files, or interfere with the Platform's operation;
+h) use the Platform for any fraudulent purpose.
+
+Uploads are subject to size limits shown on the Platform.
+
+
+7. REVIEWS
+
+Reviews must be honest and based on your genuine experience with the expert.
+You may edit your review at any time. We may remove reviews that breach these
+Terms, but we do not otherwise endorse or verify reviews and are not
+responsible for their content.
+
+
+8. SUSPENSION AND TERMINATION
+
+8.1 You may delete your account at any time from your dashboard. The effect
+of deletion on your data is described in our Privacy Policy.
+
+8.2 We may suspend or close your account, remove your content, or limit your
+access to the Platform, with or without notice, if we reasonably believe you
+have breached these Terms, if required by law, or to protect other users or
+the Platform.
+
+8.3 Sections 5.2 (to the extent it survives), 9, 10, 11 and 13 continue to
+apply after your account ends.
+
+
+9. DISCLAIMERS
+
+The Platform is provided "as is" and "as available". To the fullest extent
+permitted by law, we make no warranties of any kind, express or implied,
+including that the Platform will be uninterrupted, error-free or secure, or
+that any expert, client, profile, review or message is accurate or reliable.
+
+You are responsible for your own dealings with other users, including
+checking their identity, skills and suitability before working with them.
+
+
+10. LIMITATION OF LIABILITY
+
+10.1 Nothing in these Terms limits or excludes liability that cannot be
+limited or excluded by law, including liability for death or personal injury
+caused by negligence, or for fraud.
+
+10.2 Subject to 10.1, FVDlance will not be liable for:
+  a) any dispute, loss or damage arising from an agreement or dealing between
+     users;
+  b) any indirect or consequential loss, or loss of profit, revenue, business,
+     goodwill or data;
+  c) any loss caused by content posted by other users.
+
+10.3 Subject to 10.1, our total liability to you for all claims relating to
+the Platform is limited to [the greater of the amount you paid us in the
+12 months before the claim or [AMOUNT/CURRENCY]].
+
+[LAWYER TO CHECK CONSUMER-LAW LIMITS IN THE GOVERNING JURISDICTION.]
+
+
+11. INDEMNITY
+
+You agree to compensate FVDlance for any claims, losses and reasonable costs
+(including legal fees) arising from Your Content, your breach of these Terms,
+or your dealings with other users. [LAWYER TO CONFIRM ENFORCEABILITY AGAINST
+CONSUMERS.]
+
+
+12. CHANGES TO THE PLATFORM AND THESE TERMS
+
+We may change, suspend or discontinue any part of the Platform at any time.
+We may update these Terms from time to time. If we make significant changes,
+we will notify you by email or through the Platform before they take effect.
+If you keep using the Platform after the changes take effect, you accept the
+updated Terms.
+
+
+13. GOVERNING LAW AND DISPUTES
+
+These Terms are governed by the laws of [JURISDICTION]. The courts of
+[JURISDICTION] have [exclusive / non-exclusive] jurisdiction over any dispute
+arising from them, except that if you are a consumer you may also have the
+right to bring proceedings in the courts of the country where you live.
+
+
+14. GENERAL
+
+- If any part of these Terms is found unenforceable, the rest remains in
+  effect.
+- If we do not enforce a right straight away, we can still enforce it later.
+- You may not transfer your rights under these Terms without our consent. We
+  may transfer ours to another organisation, for example if our business is
+  sold.
+- These Terms, together with the Privacy Policy, are the entire agreement
+  between you and FVDlance about the Platform.
+
+
+15. CONTACT
+
+[LEGAL ENTITY NAME]
+[REGISTERED ADDRESS]
+[CONTACT EMAIL]

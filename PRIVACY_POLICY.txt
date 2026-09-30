@@ -1,0 +1,229 @@
+FVDLANCE PRIVACY POLICY
+
+DRAFT - NOT YET REVIEWED BY A LAWYER. Items in [BRACKETS] must be filled in.
+
+Last updated: [DATE]
+
+
+1. WHO WE ARE
+
+FVDlance ("FVDlance", "we", "us", "our") is an online platform that connects
+clients with creative experts (for example in visual identity, illustration,
+storyboarding, animation, motion graphics and CGI). The platform is operated by
+[LEGAL ENTITY NAME], [REGISTERED ADDRESS] [COMPANY NUMBER, IF ANY].
+
+For the purposes of data protection law, we are the "controller" of the
+personal data described in this policy.
+
+Contact for privacy matters: [PRIVACY CONTACT EMAIL]
+
+
+2. SCOPE
+
+This policy explains what personal data we collect when you visit or use the
+FVDlance website at [DOMAIN] (the "Platform"), why we collect it, who we share
+it with, how long we keep it and what rights you have.
+
+
+3. THE DATA WE COLLECT
+
+3.1 Account information
+When you create an account we collect your name, email address and password.
+Passwords are stored in hashed form and we cannot read them. If you sign in
+with Google, we receive your name, email address and profile picture from
+Google; we do not receive your Google password.
+
+We also record whether your email address has been verified.
+
+3.2 Profile information
+You may add information to your profile, including your first name and
+surname, avatar image, location, headline, bio, website, external links, and
+(for experts) specialty, rate and selected portfolio projects (images, titles
+and links).
+
+3.3 Expert applications
+If you apply to become an expert, we collect the information in your
+application: name, email address, specialty, bio, portfolio link and/or
+portfolio file, and any other links you provide.
+
+3.4 Enquiries
+If you send us an enquiry, we collect your name, email address and the brief
+or message you send.
+
+3.5 Messages and attachments
+When you use the messaging feature, we store the content of your messages, any
+files you attach (with their file names and sizes), when each message was
+sent, and when it was read.
+
+3.6 Reviews and saved experts
+If you leave a review of an expert, we store your rating, comment and the date.
+If you save an expert to your list, we record that.
+
+3.7 Technical and session data
+When you sign in we create a session, and our authentication system records
+information such as your IP address and browser/device type (user agent) for
+security purposes, for example to detect suspicious sign-ins and prevent abuse.
+[CONFIRM WITH BETTER-AUTH / DASH PLUGIN EXACTLY WHAT IS LOGGED.]
+
+Our hosting provider may also process standard server log data (such as IP
+address, request time and pages requested) to operate and secure the service.
+
+
+4. HOW AND WHY WE USE YOUR DATA
+
+We use your personal data to:
+
+a) Create and manage your account and let you sign in
+   (legal basis: performance of a contract with you).
+b) Verify your email address and send you service emails such as verification
+   links (contract).
+c) Display expert profiles, portfolio work and reviews publicly on the
+   Platform (contract; for experts, also your consent to public display given
+   when you apply).
+d) Review expert applications and decide whether to approve them
+   (contract / legitimate interests in maintaining the quality of the
+   Platform).
+e) Deliver messages between users, including in real time (contract).
+f) Respond to enquiries you send us (legitimate interests / steps taken at
+   your request before entering into a contract).
+g) Keep the Platform secure, prevent fraud and abuse, and enforce our Terms of
+   Service (legitimate interests).
+h) Comply with legal obligations (legal obligation).
+
+We do not sell your personal data. We do not use your data for advertising
+and we do not use automated decision-making that produces legal or similarly
+significant effects on you.
+
+
+5. WHAT IS PUBLIC
+
+The following is visible to anyone visiting the Platform:
+
+- For listed experts: name, avatar, location, headline, bio, specialty, rate,
+  website, external links, selected projects and reviews received.
+- For reviewers: your name and avatar next to your review, rating and comment.
+  If you delete your account, your review remains but is shown as
+  "Former member". [CONFIRM THIS IS THE DESIRED BEHAVIOUR.]
+
+Experts can hide their own profile from the public directory at any time from
+their dashboard. Administrators may also remove an expert from the directory.
+
+Messages are private between the participants of a conversation. Platform
+administrators can [CAN / CANNOT - CONFIRM] access messages for
+[e.g. safety, abuse investigation, support].
+
+
+6. WHO WE SHARE YOUR DATA WITH
+
+We use the following service providers ("processors") to run the Platform.
+They process data only on our instructions.
+
+- Vercel Inc. (USA) - website hosting and file storage (Vercel Blob) for
+  avatars, portfolio images, application files and message attachments.
+- [DATABASE PROVIDER] - hosting of our PostgreSQL database.
+- Pusher Ltd (UK, part of MessageBird) - real-time delivery of messages.
+- Resend (USA) - sending transactional emails such as verification emails.
+- Google LLC (USA) - "Sign in with Google", only if you choose to use it.
+- Better Auth (better-auth infrastructure / dashboard service) -
+  authentication and security monitoring. [CONFIRM PROVIDER NAME, LOCATION
+  AND WHAT DATA IS SENT.]
+
+We may also disclose personal data if required by law, to protect the rights,
+property or safety of FVDlance, our users or others, or in connection with a
+merger, acquisition or sale of all or part of our business.
+
+
+7. INTERNATIONAL TRANSFERS
+
+Some of our service providers are located outside [YOUR COUNTRY / the UK /
+the EEA], including in the United States. Where we transfer personal data
+internationally, we rely on appropriate safeguards such as adequacy decisions,
+the EU-US / UK-US Data Privacy Framework or Standard Contractual Clauses.
+[LAWYER TO CONFIRM PER PROVIDER.]
+
+
+8. COOKIES
+
+We only use cookies that are strictly necessary for the Platform to work,
+specifically to keep you signed in and to secure your session. We do not use
+analytics, advertising or tracking cookies. Because these cookies are strictly
+necessary, we do not ask for consent to them.
+
+If we introduce analytics or other non-essential cookies in the future, we will
+update this policy and ask for your consent where required.
+
+
+9. HOW LONG WE KEEP YOUR DATA
+
+- Account and profile data: for as long as your account exists.
+- Messages and attachments: for as long as both participants' accounts exist.
+  When either participant deletes their account, the whole conversation
+  (including the other person's messages and attachments) is deleted.
+- Uploaded files (avatars, portfolio images, application portfolio files and
+  message attachments): permanently deleted from our file storage when you
+  delete your account.
+- Expert applications: for as long as your account exists [OR: X months after
+  a decision]. Applications submitted without an account are kept for
+  [X MONTHS] unless you ask us to delete them.
+- Enquiries: [X MONTHS/YEARS]. Enquiries are kept after account deletion so we
+  have a record of the correspondence, but are no longer linked to your
+  account.
+- Reviews: kept after account deletion as "Former member" (see section 5).
+- Sessions: until they expire or you sign out.
+- Server/security logs: [X DAYS], as set by our providers.
+
+We may keep data longer where needed to comply with legal obligations or to
+resolve disputes.
+
+
+10. YOUR RIGHTS
+
+Depending on where you live (for example under the EU/UK GDPR or the
+California Consumer Privacy Act), you may have the right to:
+
+- access the personal data we hold about you;
+- correct inaccurate data (you can edit most profile data yourself);
+- delete your data (you can delete your account from your dashboard at any
+  time);
+- receive a copy of your data in a portable format;
+- object to or restrict certain processing;
+- withdraw consent where we rely on it;
+- complain to a data protection authority, for example [RELEVANT AUTHORITY,
+  e.g. the UK Information Commissioner's Office (ico.org.uk)].
+
+California residents: we do not sell or "share" personal information for
+cross-context behavioural advertising, and we will not discriminate against
+you for exercising your rights.
+
+To exercise any right, email [PRIVACY CONTACT EMAIL]. We may need to verify
+your identity before acting on your request. We aim to respond within one
+month.
+
+
+11. SECURITY
+
+We use industry-standard measures to protect your data, including encrypted
+connections (HTTPS), hashed passwords, access controls on uploaded files and
+private messaging channels, and restricted administrator access. No system is
+completely secure, so we cannot guarantee absolute security.
+
+
+12. CHILDREN
+
+The Platform is not intended for anyone under [16 / 18]. We do not knowingly
+collect personal data from children. If you believe a child has given us
+personal data, contact us and we will delete it.
+
+
+13. CHANGES TO THIS POLICY
+
+We may update this policy from time to time. If we make significant changes,
+we will notify you by email or through the Platform. The "Last updated" date
+at the top shows when it last changed.
+
+
+14. CONTACT
+
+[LEGAL ENTITY NAME]
+[REGISTERED ADDRESS]
+[PRIVACY CONTACT EMAIL]

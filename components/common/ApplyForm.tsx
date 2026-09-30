@@ -5,6 +5,7 @@ import { uploadApplicationPortfolio } from "@/lib/blob-upload";
 import { formatFileSize } from "@/lib/format-file-size";
 import { APPLICATION_PORTFOLIO_MAX_BYTES } from "@/lib/upload-limits";
 import { useDialog } from "@/contexts/DialogContext";
+import TermsCheckbox from "@/components/legal/TermsCheckbox";
 import { useActionState, useEffect, useState } from "react";
 
 type LinkRow = { key: string; label: string; url: string };
@@ -21,6 +22,7 @@ const ApplyForm = ({ close }: { close: () => void }) => {
   const [portfolioUrl, setPortfolioUrl] = useState("");
   const [portfolioUploading, setPortfolioUploading] = useState(false);
   const [portfolioError, setPortfolioError] = useState<string | null>(null);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [state, formAction, isPending] = useActionState(
     submitApplication,
     initialState,
@@ -193,13 +195,15 @@ const ApplyForm = ({ close }: { close: () => void }) => {
         <input type="hidden" name="portfolioUrl" value={portfolioUrl} />
       </div>
 
+      <TermsCheckbox checked={acceptedTerms} onChange={setAcceptedTerms} />
+
       <div className="flex flex-col gap-2">
         {state && !state.success && (
           <p className="text-sm text-[#d35555]">{state.message}</p>
         )}
         <button
           type="submit"
-          disabled={isPending || portfolioUploading}
+          disabled={isPending || portfolioUploading || !acceptedTerms}
           className="button-primary w-full disabled:opacity-60"
         >
           {isPending

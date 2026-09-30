@@ -1,6 +1,7 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { MESSAGE_ATTACHMENT_MAX_BYTES } from "@/lib/upload-limits";
+import { hasAcceptedTerms, TERMS_REQUIRED_MESSAGE } from "@/lib/terms";
 import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
 import { NextResponse } from "next/server";
 
@@ -33,6 +34,10 @@ export async function POST(request: Request) {
 
         if (!session || !session.user.emailVerified) {
           throw new Error("You must be signed in to upload files.");
+        }
+
+        if (!hasAcceptedTerms(session.user)) {
+          throw new Error(TERMS_REQUIRED_MESSAGE);
         }
 
         const match = pathname.match(/^messages\/([^/]+)\//);

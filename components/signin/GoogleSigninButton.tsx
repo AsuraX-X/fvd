@@ -9,6 +9,8 @@ const GoogleSigninButton = () => {
       await authClient.signIn.social({
         provider: "google",
         callbackURL: "/",
+        // OAuth sign-ups skip the sign-up form's terms checkbox.
+        newUserCallbackURL: "/accept-terms?next=/",
       });
     } catch (error) {
       console.error("Google signin failed:", error);

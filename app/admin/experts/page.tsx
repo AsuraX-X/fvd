@@ -50,6 +50,7 @@ const page = async ({
               email={expert.email}
               specialty={expert.specialty ?? "Generalist"}
               bio={expert.bio ?? ""}
+              listingStatus={expert.listingStatus}
             />
           ))}
         </div>

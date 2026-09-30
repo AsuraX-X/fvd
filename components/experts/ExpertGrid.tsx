@@ -1,4 +1,5 @@
 import { auth } from "@/lib/auth";
+import { PUBLIC_EXPERT_WHERE } from "@/lib/experts";
 import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
 import ExpertCard from "./ExpertCard";
@@ -8,7 +9,7 @@ const ExpertGrid = async () => {
   const verifiedSession = session?.user.emailVerified ? session : null;
 
   const experts = await prisma.profile.findMany({
-    where: { role: "EXPERT" },
+    where: PUBLIC_EXPERT_WHERE,
     orderBy: { createdAt: "desc" },
   });
 

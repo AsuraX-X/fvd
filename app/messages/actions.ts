@@ -2,6 +2,7 @@
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { hasAcceptedTerms, TERMS_REQUIRED_MESSAGE } from "@/lib/terms";
 import { pusherServer } from "@/lib/pusher";
 import { MESSAGE_ATTACHMENTS_MAX_TOTAL_BYTES } from "@/lib/upload-limits";
 import { formatFileSize } from "@/lib/format-file-size";
@@ -88,6 +89,9 @@ export async function getOrCreateConversation(
 
   if (!session) {
     return { success: false, message: "You must be signed in to send messages." };
+  }
+  if (!hasAcceptedTerms(session.user)) {
+    return { success: false, message: TERMS_REQUIRED_MESSAGE };
   }
   if (!caller) {
     return { success: false, message: "Your profile could not be found." };

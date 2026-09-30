@@ -1,5 +1,6 @@
 import ExpertCard from "@/components/dashboard/experts/ExpertCard";
 import { auth } from "@/lib/auth";
+import { PUBLIC_EXPERT_WHERE } from "@/lib/experts";
 import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
@@ -14,7 +15,7 @@ const page = async () => {
   }
 
   const savedExperts = await prisma.savedExpert.findMany({
-    where: { userId: session.user.id },
+    where: { userId: session.user.id, expert: PUBLIC_EXPERT_WHERE },
     include: { expert: true },
     orderBy: { createdAt: "desc" },
   });

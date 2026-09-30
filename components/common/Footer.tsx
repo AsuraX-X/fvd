@@ -63,11 +63,15 @@ const Footer = () => {
             </div>
           </div>
         </div>
-        <div className="flex flex-col items-center gap-8 lg:justify-between lg:flex-row py-15">
-          <p className="order-2 text-xs text-body/60">
+        <div className="flex flex-col-reverse lg:items-center gap-8 lg:justify-between lg:flex-row py-15">
+          <p className="text-xs text-body/60">
             © 2026 FVDlance Creative Agency. All rights reserved.
           </p>
-          <ul className="flex order-1 gap-4 text-sm lg:order-2 lg:w-fit w-full text-body">
+          <div className="flex text-sm text-body gap-4">
+            <Link href={"/privacy-policy"}>Privacy Policy</Link>
+            <Link href={"/terms-of-service"}>Terms of Service</Link>
+          </div>
+          <ul className="flex gap-4 text-sm lg:w-fit w-full text-body">
             {social.map(({ label, link }) => (
               <li key={label}>
                 <a target="_blank" href={link}>

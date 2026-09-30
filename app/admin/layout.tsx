@@ -1,6 +1,7 @@
 import AdminNav from "@/components/admin/AdminNav";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { acceptTermsPath, hasAcceptedTerms } from "@/lib/terms";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { ReactNode } from "react";
@@ -19,6 +20,10 @@ const Admin = async ({ children }: { children: ReactNode }) => {
 
   if (!session || !session.user.emailVerified) {
     redirect("/account?signin=true");
+  }
+
+  if (!hasAcceptedTerms(session.user)) {
+    redirect(acceptTermsPath());
   }
 
   const user = session.user;

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PUBLIC_EXPERT_WHERE } from "@/lib/experts";
 import { prisma } from "@/lib/prisma";
 import ExpertCard from "./ExpertCard";
 
@@ -12,7 +13,7 @@ const pickRandom = <T,>(items: T[], count: number): T[] => {
 
 const Experts = async () => {
   const experts = await prisma.profile.findMany({
-    where: { role: "EXPERT", selectedProjects: { some: {} } },
+    where: { ...PUBLIC_EXPERT_WHERE, selectedProjects: { some: {} } },
     include: { selectedProjects: true },
   });
 

@@ -1,6 +1,8 @@
 "use client";
 
+import TermsCheckbox from "@/components/legal/TermsCheckbox";
 import { authClient } from "@/lib/auth-client";
+import { TERMS_VERSION } from "@/lib/terms";
 import { Eye, EyeClosed } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, type SyntheticEvent } from "react";
@@ -15,6 +17,7 @@ const SigninForm = ({ signin }: SigninFormProps) => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [needsVerification, setNeedsVerification] = useState(false);
@@ -50,6 +53,11 @@ const SigninForm = ({ signin }: SigninFormProps) => {
       return;
     }
 
+    if (!signin && !acceptedTerms) {
+      setError("You must accept the Terms of Service and Privacy Policy.");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -63,6 +71,7 @@ const SigninForm = ({ signin }: SigninFormProps) => {
             email,
             password,
             name: email,
+            termsVersion: TERMS_VERSION,
             callbackURL: "/?verified=true",
           });
 
@@ -171,9 +180,12 @@ const SigninForm = ({ signin }: SigninFormProps) => {
           </div>
         </div>
       )}
+      {!signin && (
+        <TermsCheckbox checked={acceptedTerms} onChange={setAcceptedTerms} />
+      )}
       <button
         type="submit"
-        disabled={loading}
+        disabled={loading || (!signin && !acceptedTerms)}
         className="button-primary w-full font-bold disabled:opacity-50"
       >
         {loading ? "Loading..." : signin ? "Sign in" : "Create account"}

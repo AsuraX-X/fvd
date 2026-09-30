@@ -1,3 +1,4 @@
+import DangerZone from "@/components/dashboard/profile/DangerZone";
 import ProfileForm from "@/components/dashboard/profile/ProfileForm";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -22,7 +23,7 @@ const page = async () => {
   });
 
   return (
-    <div>
+    <div className="space-y-8">
       <ProfileForm
         userId={session.user.id}
         email={session.user.email}
@@ -39,8 +40,10 @@ const page = async () => {
           rate: profile?.rate ?? null,
         }}
         links={
-          profile?.links.map((link) => ({ label: link.label, url: link.url })) ??
-          []
+          profile?.links.map((link) => ({
+            label: link.label,
+            url: link.url,
+          })) ?? []
         }
         selectedProjects={
           profile?.selectedProjects.map((project) => ({
@@ -49,6 +52,10 @@ const page = async () => {
             imageUrl: project.imageUrl,
           })) ?? []
         }
+      />
+      <DangerZone
+        role={profile?.role ?? "USER"}
+        listingStatus={profile?.listingStatus ?? "LISTED"}
       />
     </div>
   );

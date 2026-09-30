@@ -1,8 +1,10 @@
 import { dash } from "@better-auth/infra";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
+import { APIError } from "better-auth/api";
 import { prisma } from "./prisma";
 import { EMAIL_FROM, resend } from "./resend";
+import { TERMS_VERSION } from "./terms";
 
 export const BASE_URL =
   process.env.BETTER_AUTH_URL ||
@@ -46,5 +48,34 @@ export const auth = betterAuth({
           },
         }
       : undefined,
+  user: {
+    additionalFields: {
+      // Sent by the sign-up form's terms checkbox; validated in the hook below.
+      termsVersion: { type: "string", required: false, input: true },
+      termsAcceptedAt: { type: "date", required: false, input: false },
+    },
+  },
+  databaseHooks: {
+    user: {
+      create: {
+        before: async (user, ctx) => {
+          // Email sign-ups must tick the terms checkbox. OAuth sign-ups can't,
+          // so they're created without acceptance and sent to /accept-terms.
+          if (ctx?.path === "/sign-up/email") {
+            if (user.termsVersion !== TERMS_VERSION) {
+              throw new APIError("BAD_REQUEST", {
+                message:
+                  "You must accept the Terms of Service and Privacy Policy.",
+              });
+            }
+            return { data: { ...user, termsAcceptedAt: new Date() } };
+          }
+          return {
+            data: { ...user, termsVersion: null, termsAcceptedAt: null },
+          };
+        },
+      },
+    },
+  },
   plugins: [dash()],
 });

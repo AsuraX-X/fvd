@@ -1,10 +1,11 @@
+import { PUBLIC_EXPERT_WHERE } from "@/lib/experts";
 import { prisma } from "@/lib/prisma";
 import { SITE_URL } from "@/lib/site";
 import { MetadataRoute } from "next";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const experts = await prisma.profile.findMany({
-    where: { role: "EXPERT" },
+    where: PUBLIC_EXPERT_WHERE,
     select: { id: true, updatedAt: true },
   });
 

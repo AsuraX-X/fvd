@@ -24,6 +24,16 @@ enum ApplicationStatus {
   REJECTED @map("rejected")
 }
 
+// LISTED is the only publicly visible state. UNLISTED_BY_ADMIN can only be
+// cleared by an admin — setOwnListing (app/dashboard/profile/actions.ts)
+// refuses to touch it, and setExpertListing (app/admin/experts/actions.ts)
+// won't relist an expert who unlisted themselves.
+enum ListingStatus {
+  LISTED             @map("listed")
+  UNLISTED_BY_EXPERT @map("unlisted_by_expert")
+  UNLISTED_BY_ADMIN  @map("unlisted_by_admin")
+}
+
 enum EnquiryStatus {
   NEW      @map("new")
   READ     @map("read")
@@ -31,50 +41,57 @@ enum EnquiryStatus {
 }
 
 model User {
-  id            String    @id
+  id            String        @id
   name          String
   email         String
-  emailVerified Boolean   @default(false)
+  emailVerified Boolean       @default(false)
   image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  // Version of the Terms/Privacy Policy the user last accepted (see lib/terms.ts).
+  termsVersion    String?
+  termsAcceptedAt DateTime?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
   sessions      Session[]
   accounts      Account[]
   profile       Profile?
   savedExperts  SavedExpert[]
   application   Application?
   enquiries     Enquiry[]
+  reviews       Review[]
 
   @@unique([email])
   @@map("user")
 }
 
 model Profile {
-  id        String   @id
-  avatar    String?
-  email     String   @unique
-  firstName String
-  surname   String
-  location  String?
-  headline  String?
-  website   String?
-  bio       String?
-  specialty String?
-  rate      Int?
-  role      Role     @default(USER)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String        @id
+  avatar        String?
+  email         String        @unique
+  firstName     String
+  surname       String
+  location      String?
+  headline      String?
+  website       String?
+  bio           String?
+  specialty     String?
+  rate          Int?
+  role          Role          @default(USER)
+  listingStatus ListingStatus @default(LISTED)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 
   userId           String            @unique
   user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   links            ProfileLink[]
   selectedProjects SelectedProject[]
   savedBy          SavedExpert[]     @relation("SavedExpertProfile")
+  reviewsReceived  Review[]          @relation("ExpertReviews")
 
   conversationsAsParticipantOne Conversation[] @relation("ConversationParticipantOne")
   conversationsAsParticipantTwo Conversation[] @relation("ConversationParticipantTwo")
   sentMessages                  Message[]      @relation("MessageSender")
 
+  @@index([role, listingStatus])
   @@map("profile")
 }
 
@@ -147,6 +164,32 @@ model SavedExpert {
   @@unique([userId, expertId])
   @@index([expertId])
   @@map("saved_expert")
+}
+
+// One review per (user, expert) pair — resubmitting updates the existing row.
+// userId is nullable + SetNull so a review outlives its author's account
+// deletion (shown as "Former member"); it still cascades with the expert.
+// DB-level CHECK constraints (added by hand in the add_review migration, since
+// Prisma can't express them): rating BETWEEN 1 AND 5, non-blank comment of at
+// most 2000 chars, and userId <> expertId (Profile.id === User.id, so this
+// blocks self-reviews). "expertId must be an EXPERT profile" is role-based and
+// enforced in submitReview (app/experts/actions.ts), not the DB.
+model Review {
+  id        String   @id @default(cuid())
+  rating    Int
+  comment   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  expertId String
+  expert   Profile @relation("ExpertReviews", fields: [expertId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, expertId])
+  @@index([expertId, createdAt])
+  @@map("review")
 }
 
 model ProfileLink {
@@ -222,8 +265,10 @@ model Enquiry {
   status    EnquiryStatus @default(NEW)
   createdAt DateTime      @default(now())
 
-  userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // Nullable + SetNull so admins keep the enquiry after the sender deletes
+  // their account (name/email/brief are stored on the row itself).
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
 
   @@index([userId])
   @@index([status])
