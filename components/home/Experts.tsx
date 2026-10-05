@@ -23,6 +23,15 @@ const Experts = async () => {
     return null;
   }
 
+  const ratings = await prisma.review.groupBy({
+    by: ["expertId"],
+    where: { expertId: { in: randomExperts.map((expert) => expert.id) } },
+    _avg: { rating: true },
+  });
+  const averageRatings = new Map(
+    ratings.map((group) => [group.expertId, group._avg.rating]),
+  );
+
   return (
     <section className="py-20">
       <div className="px-8 mx-auto max-w-7xl">
@@ -50,6 +59,7 @@ const Experts = async () => {
               name={`${expert.firstName} ${expert.surname}`.trim()}
               headline={expert.headline}
               avatar={expert.avatar}
+              rating={averageRatings.get(expert.id) ?? null}
               projectImage={pickRandom(expert.selectedProjects, 1)[0]?.imageUrl ?? null}
             />
           ))}

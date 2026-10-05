@@ -8,6 +8,8 @@ interface ExpertCardProps {
   headline: string | null;
   avatar: string | null;
   projectImage: string | null;
+  // Average review rating; null when the expert has no reviews yet.
+  rating: number | null;
 }
 
 const ExpertCard = ({
@@ -16,6 +18,7 @@ const ExpertCard = ({
   headline,
   avatar,
   projectImage,
+  rating,
 }: ExpertCardProps) => {
   return (
     <Link
@@ -45,12 +48,14 @@ const ExpertCard = ({
             {headline && <p className="text-body text-xs">{headline}</p>}
           </div>
         </div>
-        <div className="bg-secondary/10 py-1 px-1.5 rounded-md">
-          <p className="flex gap-1 text-xs text-body items-center">
-            <Star size={10} fill="#a1a9b4" stroke="#a1a9b4" />
-            4.8
-          </p>
-        </div>
+        {rating !== null && (
+          <div className="bg-secondary/10 py-1 px-1.5 rounded-md">
+            <p className="flex gap-1 text-xs text-body items-center">
+              <Star size={10} fill="#a1a9b4" stroke="#a1a9b4" />
+              {rating.toFixed(1)}
+            </p>
+          </div>
+        )}
       </div>
     </Link>
   );
