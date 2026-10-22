@@ -12,8 +12,13 @@ import { prisma } from "@/lib/prisma";
 import { SITE_URL } from "@/lib/site";
 import { Ibarra_Real_Nova, Montserrat } from "next/font/google";
 import { headers } from "next/headers";
+import Script from "next/script";
 import { Suspense } from "react";
 import "./globals.css";
+
+// Google Analytics 4. Only loaded in production so local dev doesn't skew stats.
+const GA_MEASUREMENT_ID = "G-G4WPP1EQ82";
+const enableAnalytics = process.env.NODE_ENV === "production";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -81,6 +86,22 @@ export default async function RootLayout({
             <DialogRenderer />
           </DialogProvider>
         </RoleProvider>
+        {enableAnalytics && (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+              strategy="afterInteractive"
+            />
+            <Script id="google-analytics" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${GA_MEASUREMENT_ID}');
+              `}
+            </Script>
+          </>
+        )}
       </body>
     </html>
   );
