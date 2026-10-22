@@ -1,5 +1,6 @@
 import GoogleSigninButton from "@/components/signin/GoogleSigninButton";
 import SigninForm from "@/components/signin/SigninForm";
+import { safeNextPath } from "@/lib/terms";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
@@ -17,6 +18,11 @@ type PageProps = {
 const page = async ({ searchParams }: PageProps) => {
   const params = await searchParams;
   const signin = params.signin === "true";
+  // Where to land after signing in/up, e.g. back on the page they clicked
+  // "Apply" on (with `?apply=true` so the form reopens).
+  const next =
+    typeof params.next === "string" ? safeNextPath(params.next) : "/";
+  const nextQuery = next === "/" ? "" : `&next=${encodeURIComponent(next)}`;
 
   return (
     <main className="py-50">
@@ -27,21 +33,21 @@ const page = async ({ searchParams }: PageProps) => {
         <h1 className="text-5xl italic mb-12">
           {signin ? "Sign in" : "Join FVDlance"}
         </h1>
-        <GoogleSigninButton />
+        <GoogleSigninButton next={next} />
         <div className="py-10 flex items-center gap-4 justify-center">
           <div className="h-px bg-primary-light w-full" />
           <p className="text-body text-xs">or</p>
           <div className="h-px bg-primary-light w-full" />
         </div>
         <div>
-          <SigninForm signin={signin} />
+          <SigninForm signin={signin} next={next} />
         </div>{" "}
         <div className="flex text-xs gap-1 justify-center py-6 ">
           <p className="text-body">
             {signin ? "New Here? " : "Already have an account? "}
           </p>
           <Link
-            href={signin ? "/account?signin=false" : "/account?signin=true"}
+            href={`/account?signin=${signin ? "false" : "true"}${nextQuery}`}
             className="hover:border-b-secondary-lighter border-b border-b-primary transition-colors"
           >
             {signin ? "Create an account" : "Sign in"}

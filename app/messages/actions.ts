@@ -1,6 +1,7 @@
 "use server";
 
 import { auth } from "@/lib/auth";
+import { sendInBackground, sendNewMessageEmail } from "@/lib/emails";
 import { prisma } from "@/lib/prisma";
 import { hasAcceptedTerms, TERMS_REQUIRED_MESSAGE } from "@/lib/terms";
 import { pusherServer } from "@/lib/pusher";
@@ -208,7 +209,82 @@ export async function sendMessage(
 
   revalidateConversationPaths(conversation.participantOneId, conversation.participantTwoId);
 
+  const recipientId =
+    conversation.participantOneId === caller.id
+      ? conversation.participantTwoId
+      : conversation.participantOneId;
+  sendInBackground(() =>
+    notifyRecipientByEmail({
+      conversationId,
+      messageId: message.id,
+      senderId: caller.id,
+      recipientId,
+      content: message.content,
+      attachmentCount: message.attachments.length,
+    }),
+  );
+
   return { success: true, data: message };
+}
+
+const ACTIVE_WINDOW_MS = 10 * 60 * 1000;
+
+// Emails only on the first unread message, and not while the recipient is
+// mid-conversation, so a burst of messages produces one email, not dozens.
+async function notifyRecipientByEmail(message: {
+  conversationId: string;
+  messageId: string;
+  senderId: string;
+  recipientId: string;
+  content: string;
+  attachmentCount: number;
+}) {
+  const activeSince = new Date(Date.now() - ACTIVE_WINDOW_MS);
+
+  const [earlierUnread, recentRecipientActivity, sender, recipient] = await Promise.all([
+    prisma.message.count({
+      where: {
+        conversationId: message.conversationId,
+        senderId: message.senderId,
+        readAt: null,
+        id: { not: message.messageId },
+      },
+    }),
+    prisma.message.count({
+      where: {
+        conversationId: message.conversationId,
+        OR: [
+          { senderId: message.recipientId, createdAt: { gte: activeSince } },
+          { senderId: message.senderId, readAt: { gte: activeSince } },
+        ],
+      },
+    }),
+    prisma.profile.findUnique({
+      where: { id: message.senderId },
+      select: { firstName: true, surname: true },
+    }),
+    prisma.profile.findUnique({
+      where: { id: message.recipientId },
+      select: {
+        firstName: true,
+        messageEmailNotifications: true,
+        user: { select: { email: true, emailVerified: true } },
+      },
+    }),
+  ]);
+
+  if (earlierUnread > 0 || recentRecipientActivity > 0) return;
+  if (!sender || !recipient?.user.emailVerified) return;
+  if (!recipient.messageEmailNotifications) return;
+
+  await sendNewMessageEmail({
+    to: recipient.user.email,
+    recipientName: recipient.firstName,
+    senderName: `${sender.firstName} ${sender.surname}`.trim() || "Someone",
+    senderProfileId: message.senderId,
+    content: message.content,
+    attachmentCount: message.attachmentCount,
+  });
 }
 
 export async function markConversationRead(

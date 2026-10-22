@@ -3,6 +3,7 @@
 import { REVIEW_MAX_LENGTH } from "@/constants";
 import { Prisma } from "@/generated/prisma/client";
 import { auth } from "@/lib/auth";
+import { sendInBackground, sendNewReviewEmail } from "@/lib/emails";
 import { isPublicExpert } from "@/lib/experts";
 import { prisma } from "@/lib/prisma";
 import { hasAcceptedTerms, TERMS_REQUIRED_MESSAGE } from "@/lib/terms";
@@ -137,6 +138,35 @@ export async function submitReview(
   }
 
   revalidatePath(`/experts/${expertId}`);
+
+  // Only new reviews — editing an existing one shouldn't re-notify the expert.
+  if (!updated) {
+    const reviewerId = session.user.id;
+    sendInBackground(async () => {
+      const [expertProfile, reviewer] = await Promise.all([
+        prisma.profile.findUnique({
+          where: { id: expertId },
+          select: { firstName: true, user: { select: { email: true } } },
+        }),
+        prisma.profile.findUnique({
+          where: { id: reviewerId },
+          select: { firstName: true, surname: true },
+        }),
+      ]);
+      if (!expertProfile) return;
+
+      await sendNewReviewEmail({
+        to: expertProfile.user.email,
+        expertName: expertProfile.firstName,
+        expertId,
+        reviewerName:
+          `${reviewer?.firstName ?? ""} ${reviewer?.surname ?? ""}`.trim() ||
+          "A client",
+        rating,
+        comment,
+      });
+    });
+  }
 
   return {
     success: true,

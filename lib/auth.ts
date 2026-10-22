@@ -2,8 +2,12 @@ import { dash } from "@better-auth/infra";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { APIError } from "better-auth/api";
+import {
+  sendPasswordResetEmail,
+  sendVerificationEmail,
+  sendWelcomeEmail,
+} from "./emails";
 import { prisma } from "./prisma";
-import { EMAIL_FROM, resend } from "./resend";
 import { TERMS_VERSION } from "./terms";
 
 export const BASE_URL =
@@ -13,6 +17,16 @@ export const BASE_URL =
 export const TRUSTED_ORIGINS = (process.env.TRUSTED_ORIGINS || BASE_URL)
   .split(",")
   .map((s) => s.trim());
+
+// A welcome email is a nice-to-have: log a failure rather than failing the
+// sign-up or verification request that triggered it.
+const sendWelcomeEmailSafely = async (user: { email: string; name: string }) => {
+  try {
+    await sendWelcomeEmail(user.email, user.name);
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 export const auth = betterAuth({
   appName: "FVDLance",
@@ -32,22 +46,23 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,
+    resetPasswordTokenExpiresIn: 60 * 60,
+    revokeSessionsOnPasswordReset: true,
+    sendResetPassword: async ({ user, url }) => {
+      await sendPasswordResetEmail(user.email, url);
+    },
   },
   emailVerification: {
     sendOnSignUp: true,
     sendOnSignIn: true,
     autoSignInAfterVerification: true,
     sendVerificationEmail: async ({ user, url }) => {
-      const { error } = await resend.emails.send({
-        from: EMAIL_FROM,
-        to: user.email,
-        subject: "Verify your email",
-        html: `<p>Welcome to FVDlance! Please verify your email address to activate your account.</p><p><a href="${url}">Verify your email</a></p><p>If you didn't create this account, you can ignore this email.</p>`,
-      });
-
-      if (error) {
-        throw new Error(`Failed to send verification email: ${error.message}`);
-      }
+      await sendVerificationEmail(user.email, url);
+    },
+    // Fires once, on the unverified → verified transition (better-auth returns
+    // early for already-verified users), so email sign-ups get exactly one welcome.
+    afterEmailVerification: async (user) => {
+      await sendWelcomeEmailSafely(user);
     },
   },
   socialProviders:
@@ -84,6 +99,11 @@ export const auth = betterAuth({
           return {
             data: { ...user, termsVersion: null, termsAcceptedAt: null },
           };
+        },
+        // OAuth users arrive already verified; email sign-ups are welcomed in
+        // `afterEmailVerification` instead, once they confirm their address.
+        after: async (user) => {
+          if (user.emailVerified) await sendWelcomeEmailSafely(user);
         },
       },
       update: {

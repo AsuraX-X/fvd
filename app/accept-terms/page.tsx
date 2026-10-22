@@ -1,6 +1,6 @@
 import AcceptTermsForm from "@/components/legal/AcceptTermsForm";
 import { auth } from "@/lib/auth";
-import { hasAcceptedTerms, safeNextPath } from "@/lib/terms";
+import { hasAcceptedTerms, safeNextPath, signInPath } from "@/lib/terms";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -18,7 +18,8 @@ const page = async ({ searchParams }: PageProps) => {
   const next = safeNextPath((await searchParams).next);
 
   if (!session) {
-    redirect("/account?signin=true");
+    // `next` re-checks terms itself, so it routes back here if still needed.
+    redirect(signInPath(next));
   }
 
   if (hasAcceptedTerms(session.user)) {

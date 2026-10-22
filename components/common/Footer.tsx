@@ -4,13 +4,15 @@ import { quickLinks, social, studio } from "@/constants";
 import { useDialog } from "@/contexts/DialogContext";
 import { useRole } from "@/contexts/RoleContext";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { signInWithIntentPath } from "@/lib/terms";
+import { usePathname, useRouter } from "next/navigation";
 import Logo from "./Logo";
 
 const Footer = () => {
   const { openDialog } = useDialog();
   const role = useRole();
   const router = useRouter();
+  const pathname = usePathname();
 
   return (
     <section className="border-t px-8 border-t-primary-light ">
@@ -38,7 +40,7 @@ const Footer = () => {
                   <button
                     onClick={() => {
                       if (!role) {
-                        router.push("/account?signin=true");
+                        router.push(signInWithIntentPath(pathname, "contact"));
                         return;
                       }
                       openDialog("enquiry", { briefLabel: "Message" });

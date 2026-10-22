@@ -12,6 +12,8 @@
   --color-secondary-lighter: #393939;
   --color-secondary-light: #1f1f1f;
   --color-secondary: #0a0a0a;
+  /* --color-secondary at 50% as a literal rgba: Motion can't animate color-mix(). */
+  --color-secondary-half: rgba(10, 10, 10, 0.5);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -25,6 +27,7 @@
     --color-secondary-lighter: #e5e5e5;
     --color-secondary-light: #d3d3d3;
     --color-secondary: #ffffff;
+    --color-secondary-half: rgba(255, 255, 255, 0.5);
   }
 }
 

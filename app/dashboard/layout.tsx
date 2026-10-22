@@ -1,7 +1,12 @@
 import DashBoardNav from "@/components/dashboard/DashBoardNav";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { acceptTermsPath, hasAcceptedTerms } from "@/lib/terms";
+import {
+  acceptTermsPath,
+  hasAcceptedTerms,
+  requestedPath,
+  signInPath,
+} from "@/lib/terms";
 import { headers } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -19,12 +24,14 @@ const Dashboard = async ({ children }: { children: ReactNode }) => {
     headers: headersList,
   });
 
+  const returnTo = requestedPath(headersList, "/dashboard");
+
   if (!session || !session.user.emailVerified) {
-    redirect("/account?signin=true");
+    redirect(signInPath(returnTo));
   }
 
   if (!hasAcceptedTerms(session.user)) {
-    redirect(acceptTermsPath());
+    redirect(acceptTermsPath(returnTo));
   }
 
   const user = session.user;

@@ -29,7 +29,7 @@ const AdminNav = () => {
                   color: "var(--color-secondary)",
                   borderColor:
                     link !== pathname
-                      ? "color-mix(in oklab, var(--color-secondary) 50%, transparent)"
+                      ? "var(--color-secondary-half)"
                       : "var(--color-secondary)",
                 }}
                 className="text-sm px-6 py-2 text-body border-b"

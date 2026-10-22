@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { PUBLIC_EXPERT_WHERE } from "@/lib/experts";
 import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
+import { signInPath } from "@/lib/terms";
 import { redirect } from "next/navigation";
 
 export const metadata = { title: "Saved Experts" };
@@ -11,7 +12,7 @@ const page = async () => {
   const session = await auth.api.getSession({ headers: await headers() });
 
   if (!session) {
-    redirect("/account?signin=true");
+    redirect(signInPath("/dashboard/experts"));
   }
 
   const savedExperts = await prisma.savedExpert.findMany({

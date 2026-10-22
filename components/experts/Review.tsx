@@ -1,6 +1,7 @@
 "use client";
 import { submitReview, type SubmitReviewState } from "@/app/experts/actions";
 import { REVIEW_MAX_LENGTH } from "@/constants";
+import { signInPath } from "@/lib/terms";
 import { Star } from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
@@ -34,7 +35,7 @@ const Review = ({
     return (
       <div className="flex rounded-xl flex-col gap-3 p-4 bg-primary-light">
         <p className="text-sm text-body">
-          <Link href="/account?signin=true" className="link">
+          <Link href={signInPath(`/experts/${expertId}`)} className="link">
             Sign in
           </Link>{" "}
           to leave a review.

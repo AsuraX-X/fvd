@@ -11,6 +11,8 @@ const EmailVerifiedWatcher = () => {
 
   useEffect(() => {
     if (searchParams.get("verified") !== "true") return;
+    // DialogIntentWatcher opens the intended dialog instead and clears `verified`.
+    if (searchParams.get("intent")) return;
 
     openDialog("email-verified");
 

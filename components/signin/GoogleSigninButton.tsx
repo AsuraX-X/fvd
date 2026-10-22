@@ -1,16 +1,17 @@
 "use client";
 
 import { authClient } from "@/lib/auth-client";
+import { acceptTermsPath } from "@/lib/terms";
 import Image from "next/image";
 
-const GoogleSigninButton = () => {
+const GoogleSigninButton = ({ next = "/" }: { next?: string }) => {
   const handleGoogleSignin = async () => {
     try {
       await authClient.signIn.social({
         provider: "google",
-        callbackURL: "/",
+        callbackURL: next,
         // OAuth sign-ups skip the sign-up form's terms checkbox.
-        newUserCallbackURL: "/accept-terms?next=/",
+        newUserCallbackURL: acceptTermsPath(next),
       });
     } catch (error) {
       console.error("Google signin failed:", error);

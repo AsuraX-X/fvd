@@ -2,17 +2,21 @@
 
 import TermsCheckbox from "@/components/legal/TermsCheckbox";
 import { authClient } from "@/lib/auth-client";
-import { TERMS_VERSION } from "@/lib/terms";
+import { TERMS_VERSION, withSearchParam } from "@/lib/terms";
 import { Eye, EyeClosed } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, type SyntheticEvent } from "react";
 
 type SigninFormProps = {
   signin: boolean;
+  // Where to land afterwards; also carried through the verification link.
+  next?: string;
 };
 
-const SigninForm = ({ signin }: SigninFormProps) => {
+const SigninForm = ({ signin, next = "/" }: SigninFormProps) => {
   const router = useRouter();
+  const verifiedCallbackURL = withSearchParam(next, "verified", "true");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -30,7 +34,7 @@ const SigninForm = ({ signin }: SigninFormProps) => {
 
     const { error: authError } = await authClient.sendVerificationEmail({
       email,
-      callbackURL: "/dashboard?verified=true",
+      callbackURL: verifiedCallbackURL,
     });
 
     if (authError) {
@@ -65,14 +69,15 @@ const SigninForm = ({ signin }: SigninFormProps) => {
         ? await authClient.signIn.email({
             email,
             password,
-            callbackURL: "/",
+            // Only used for the verification email sent to unverified users.
+            callbackURL: verifiedCallbackURL,
           })
         : await authClient.signUp.email({
             email,
             password,
             name: email,
             termsVersion: TERMS_VERSION,
-            callbackURL: "/?verified=true",
+            callbackURL: verifiedCallbackURL,
           });
 
       if (authError) {
@@ -91,7 +96,9 @@ const SigninForm = ({ signin }: SigninFormProps) => {
         return;
       }
 
-      router.push("/");
+      router.push(next);
+      // Re-render the root layout so RoleProvider picks up the new session.
+      router.refresh();
     } catch (err) {
       console.error(err);
 
@@ -162,6 +169,14 @@ const SigninForm = ({ signin }: SigninFormProps) => {
             {showPassword ? <Eye size={16} /> : <EyeClosed size={16} />}
           </button>
         </div>
+        {signin && (
+          <Link
+            href="/account/forgot-password"
+            className="link text-body text-[10px] self-end mt-2"
+          >
+            Forgot password?
+          </Link>
+        )}
       </div>
       {!signin && (
         <div className="flex flex-col">

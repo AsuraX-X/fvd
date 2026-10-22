@@ -1,6 +1,7 @@
 "use server";
 
 import { auth } from "@/lib/auth";
+import { sendAccountDeletedEmail, sendInBackground } from "@/lib/emails";
 import { prisma } from "@/lib/prisma";
 import { hasAcceptedTerms, TERMS_REQUIRED_MESSAGE } from "@/lib/terms";
 import { del, list } from "@vercel/blob";
@@ -281,6 +282,25 @@ function revalidateExpertVisibility(profileId: string) {
   revalidatePath("/admin/users");
 }
 
+export async function setMessageEmailNotifications(
+  enabled: boolean,
+): Promise<AccountActionState> {
+  const session = await getVerifiedSession();
+
+  if (!session) {
+    return { success: false, message: "You must be signed in to do that." };
+  }
+
+  await prisma.profile.update({
+    where: { id: session.user.id },
+    data: { messageEmailNotifications: enabled },
+  });
+
+  revalidatePath("/dashboard/profile");
+
+  return { success: true };
+}
+
 // Expert pauses/resumes their own listing. Only ever moves between LISTED and
 // UNLISTED_BY_EXPERT — the conditional `where` makes UNLISTED_BY_ADMIN
 // unreachable from here, even if an admin unlists them mid-request.
@@ -424,6 +444,9 @@ export async function deleteAccount(
   // and their application. Reviews they wrote and enquiries they sent are
   // SetNull and survive — see schema.prisma.
   await prisma.user.delete({ where: { id: userId } });
+
+  const email = session.user.email;
+  sendInBackground(() => sendAccountDeletedEmail(email));
 
   await deleteBlobsWithPrefixes(
     [

@@ -2,7 +2,8 @@
 
 import { submitEnquiry, type EnquiryFormState } from "./actions";
 import { useDialog } from "@/contexts/DialogContext";
-import { useRouter } from "next/navigation";
+import { signInWithIntentPath } from "@/lib/terms";
+import { usePathname, useRouter } from "next/navigation";
 import { useActionState, useEffect } from "react";
 
 const initialState: EnquiryFormState = null;
@@ -16,6 +17,7 @@ const EnquiryForm = ({
 }) => {
   const { openDialog } = useDialog();
   const router = useRouter();
+  const pathname = usePathname();
   const [state, formAction, isPending] = useActionState(
     submitEnquiry,
     initialState,
@@ -27,9 +29,14 @@ const EnquiryForm = ({
       openDialog("enquiry-success");
     } else if (state?.code === "UNAUTHENTICATED") {
       close();
-      router.push("/account?signin=true");
+      router.push(
+        signInWithIntentPath(
+          pathname,
+          briefLabel === "Message" ? "contact" : "enquiry",
+        ),
+      );
     }
-  }, [state, close, openDialog, router]);
+  }, [state, close, openDialog, router, pathname, briefLabel]);
 
   return (
     <form className="space-y-4" action={formAction}>

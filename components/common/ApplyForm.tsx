@@ -6,6 +6,9 @@ import { formatFileSize } from "@/lib/format-file-size";
 import { APPLICATION_PORTFOLIO_MAX_BYTES } from "@/lib/upload-limits";
 import { useDialog } from "@/contexts/DialogContext";
 import TermsCheckbox from "@/components/legal/TermsCheckbox";
+import { authClient } from "@/lib/auth-client";
+import { signInWithIntentPath } from "@/lib/terms";
+import { usePathname, useRouter } from "next/navigation";
 import { useActionState, useEffect, useState } from "react";
 
 type LinkRow = { key: string; label: string; url: string };
@@ -17,6 +20,11 @@ const initialState: ApplyFormState = null;
 
 const ApplyForm = ({ close }: { close: () => void }) => {
   const { openDialog } = useDialog();
+  const router = useRouter();
+  const pathname = usePathname();
+  const user = authClient.useSession().data?.user;
+  // Email sign-ups use their email as `name`, so don't prefill that.
+  const defaultName = user && user.name !== user.email ? user.name : "";
   const [links, setLinks] = useState<LinkRow[]>([]);
   const [portfolioFile, setPortfolioFile] = useState<File | null>(null);
   const [portfolioUrl, setPortfolioUrl] = useState("");
@@ -32,8 +40,11 @@ const ApplyForm = ({ close }: { close: () => void }) => {
     if (state?.success) {
       close();
       openDialog("apply-success");
+    } else if (state?.code === "UNAUTHENTICATED") {
+      close();
+      router.push(signInWithIntentPath(pathname, "apply"));
     }
-  }, [state, close, openDialog]);
+  }, [state, close, openDialog, router, pathname]);
 
   const handlePortfolioChange = async (file: File | undefined) => {
     if (!file) {
@@ -72,31 +83,26 @@ const ApplyForm = ({ close }: { close: () => void }) => {
 
   return (
     <form className="space-y-4" action={formAction}>
-      <div className="flex flex-col sm:flex-row w-full items-center gap-2">
-        <div className="w-full">
-          <label className="form-label mb-2" htmlFor="name">
-            Full Name *
-          </label>
-          <input
-            type="text"
-            className="form-input w-full min-w-70"
-            name="name"
-            id="name"
-            required
-          />
-        </div>
-        <div className="w-full">
-          <label className="form-label mb-2" htmlFor="email">
-            Email *
-          </label>
-          <input
-            type="email"
-            className="form-input w-full min-w-70"
-            name="email"
-            id="email"
-            required
-          />
-        </div>
+      <div>
+        <label className="form-label mb-2" htmlFor="name">
+          Full Name *
+        </label>
+        <input
+          // Remount once the session loads so the prefilled name appears.
+          key={defaultName}
+          type="text"
+          className="form-input w-full min-w-70"
+          name="name"
+          id="name"
+          defaultValue={defaultName}
+          required
+        />
+        {user && (
+          <p className="text-xs text-body mt-1">
+            Applying as <strong>{user.email}</strong> — we&apos;ll send updates
+            about your application here.
+          </p>
+        )}
       </div>
       <div>
         <label className="form-label mb-2" htmlFor="specialty">

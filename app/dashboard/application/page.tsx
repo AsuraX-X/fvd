@@ -2,6 +2,7 @@ import ApplyBtn from "@/components/home/ApplyBtn";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
+import { signInPath } from "@/lib/terms";
 import { redirect } from "next/navigation";
 
 export const metadata = { title: "Application" };
@@ -16,7 +17,7 @@ const page = async () => {
   const session = await auth.api.getSession({ headers: await headers() });
 
   if (!session) {
-    redirect("/account?signin=true");
+    redirect(signInPath("/dashboard/application"));
   }
 
   const application = await prisma.application.findFirst({

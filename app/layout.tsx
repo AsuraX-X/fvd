@@ -1,7 +1,9 @@
+import DialogIntentWatcher from "@/components/common/DialogIntentWatcher";
 import EmailVerifiedWatcher from "@/components/common/EmailVerifiedWatcher";
 import Footer from "@/components/common/Footer";
 import Header from "@/components/common/Header";
 import TopLoadingBar from "@/components/common/TopLoadingBar";
+import Concierge from "@/components/concierge/Concierge";
 import { DialogProvider } from "@/contexts/DialogContext";
 import { DialogRenderer } from "@/contexts/DialogRenderer";
 import { RoleProvider } from "@/contexts/RoleContext";
@@ -70,10 +72,12 @@ export default async function RootLayout({
             <TopLoadingBar />
             <Suspense fallback={null}>
               <EmailVerifiedWatcher />
+              <DialogIntentWatcher />
             </Suspense>
             <Header />
             {children}
             <Footer />
+            <Concierge />
             <DialogRenderer />
           </DialogProvider>
         </RoleProvider>

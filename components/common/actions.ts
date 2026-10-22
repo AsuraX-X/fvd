@@ -1,6 +1,13 @@
 "use server";
 
 import { auth } from "@/lib/auth";
+import {
+  sendApplicationAdminNotification,
+  sendApplicationReceivedEmail,
+  sendEnquiryAdminNotification,
+  sendEnquiryReceivedEmail,
+  sendInBackground,
+} from "@/lib/emails";
 import { prisma } from "@/lib/prisma";
 import {
   hasAcceptedTerms,
@@ -9,10 +16,10 @@ import {
 } from "@/lib/terms";
 import { headers } from "next/headers";
 
-export type ApplyFormState = {
-  success: boolean;
-  message: string;
-} | null;
+export type ApplyFormState =
+  | { success: true; message: string }
+  | { success: false; message: string; code?: "UNAUTHENTICATED" }
+  | null;
 
 export type EnquiryFormState =
   | { success: true; message: string }
@@ -46,36 +53,46 @@ export async function submitApplication(
   _prevState: ApplyFormState,
   formData: FormData,
 ): Promise<ApplyFormState> {
+  // Applications must belong to an account so approval can promote that
+  // account to EXPERT (approveApplication in app/admin/applications/actions.ts).
+  const session = await auth.api.getSession({ headers: await headers() });
+
+  if (!session || !session.user.emailVerified) {
+    return {
+      success: false,
+      message: "You must be signed in to apply.",
+      code: "UNAUTHENTICATED",
+    };
+  }
+
   const name = String(formData.get("name") || "").trim();
-  const email = String(formData.get("email") || "").trim();
+  // Always the account's verified email, never a form field, so approval and
+  // status emails go to the person who owns the account.
+  const email = session.user.email;
   const specialty = String(formData.get("specialty") || "").trim();
   const bio = String(formData.get("bio") || "").trim();
   const portfolioUrl = String(formData.get("portfolioUrl") || "").trim();
 
-  if (!name || !email || !specialty || !bio) {
+  if (!name || !specialty || !bio) {
     return { success: false, message: "Please fill in all required fields." };
   }
 
-  // Applications can be sent without an account, so consent is collected on
-  // the form itself rather than relying on the account's acceptance.
+  // Google sign-ups may not have accepted the terms yet, so the form collects
+  // consent itself and records it on the account.
   if (formData.get("accept") !== "on") {
     return { success: false, message: TERMS_REQUIRED_MESSAGE };
   }
 
-  const session = await auth.api.getSession({ headers: await headers() });
-
-  if (session && !hasAcceptedTerms(session.user)) {
+  if (!hasAcceptedTerms(session.user)) {
     await prisma.user.update({
       where: { id: session.user.id },
       data: { termsVersion: TERMS_VERSION, termsAcceptedAt: new Date() },
     });
   }
 
-  const existing = session
-    ? await prisma.application.findFirst({
-        where: { userId: session.user.id },
-      })
-    : await prisma.application.findFirst({ where: { email, userId: null } });
+  const existing = await prisma.application.findFirst({
+    where: { userId: session.user.id },
+  });
 
   if (existing) {
     return {
@@ -93,12 +110,23 @@ export async function submitApplication(
       specialty,
       bio,
       portfolioUrl: portfolioUrl || null,
-      userId: session?.user.id,
+      userId: session.user.id,
       links: {
         create: links.map((link, index) => ({ ...link, order: index })),
       },
     },
   });
+
+  const emailData = {
+    name,
+    email,
+    specialty,
+    bio,
+    portfolioUrl: portfolioUrl || null,
+    links,
+  };
+  sendInBackground(() => sendApplicationReceivedEmail(emailData));
+  sendInBackground(() => sendApplicationAdminNotification(emailData));
 
   return {
     success: true,
@@ -135,6 +163,11 @@ export async function submitEnquiry(
   await prisma.enquiry.create({
     data: { name, email, brief, userId: session.user.id },
   });
+
+  sendInBackground(() => sendEnquiryReceivedEmail({ name, email, brief }));
+  sendInBackground(() =>
+    sendEnquiryAdminNotification({ name, email, brief }),
+  );
 
   return {
     success: true,

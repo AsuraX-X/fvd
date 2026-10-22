@@ -3,6 +3,7 @@ import { links, UserProfile } from "@/constants";
 import { useDialog } from "@/contexts/DialogContext";
 import { useRole } from "@/contexts/RoleContext";
 import { authClient } from "@/lib/auth-client";
+import { signInWithIntentPath } from "@/lib/terms";
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -170,7 +171,7 @@ const Header = () => {
             <button
               onClick={() => {
                 if (!role) {
-                  router.push("/account?signin=true");
+                  router.push(signInWithIntentPath(path, "enquiry"));
                   return;
                 }
                 openDialog("enquiry");

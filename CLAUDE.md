@@ -33,7 +33,7 @@ Next.js 16 App Router + React 19 + TypeScript, Tailwind CSS v4, Prisma 7 (driver
 - Experts have `ProfileLink[]` (external links) and `SelectedProject[]` (portfolio pieces with `imageUrl`/`title`/`url`), both ordered by an `order` int field and fully replaced (`deleteMany` + `createMany`) on profile save rather than diffed.
 - `SavedExpert` is a join table (`userId` + `expertId`, unique pair) for the "save an expert" feature — `expertId` references `Profile.id`, not `User.id`.
 - `Conversation` (`participantOneId`/`participantTwoId`, canonically ordered — smaller `Profile.id` always stored as `participantOneId` — via `@@unique([participantOneId, participantTwoId])`) and `Message` (`conversationId`, `senderId`, `content`, nullable `readAt`) back the messaging feature. Both participant fields are role-agnostic FKs to `Profile.id`; role-pairing rules (client↔expert, or admin↔anyone) are enforced in `getOrCreateConversation` (`app/messages/actions.ts`), not the DB — Postgres has no clean way to express that constraint declaratively.
-- After changing `schema.prisma`, always run `prisma migrate dev` (needs a reachable `DATABASE_URL`) followed by `prisma generate` (Prisma 7's `migrate dev` no longer regenerates the client), and then confirm `generated/prisma` picked up the change before writing code against new fields/models.
+- After changing `schema.prisma`, ask the user to run the migration themselves (it hits their real database) — `prisma migrate dev` (needs a reachable `DATABASE_URL`) followed by `prisma generate` (Prisma 7's `migrate dev` no longer regenerates the client), and then confirm `generated/prisma` picked up the change before writing code against new fields/models.
 
 ### Auth
 
@@ -61,6 +61,19 @@ Next.js 16 App Router + React 19 + TypeScript, Tailwind CSS v4, Prisma 7 (driver
 - `next.config.ts` `images.remotePatterns` explicitly allowlists `placehold.co`, `*.public.blob.vercel-storage.com`, and `picsum.photos` — any new remote image host must be added there or `next/image` will refuse to render it.
 - User-uploaded images (avatars, project images) go through Vercel Blob: `lib/blob-upload.ts` (`uploadImageToBlob`, client-side) calls `@vercel/blob/client`'s `upload()` against `app/api/profile/blob-upload/route.ts`, which validates the session and that the upload path is scoped to `profile/${session.user.id}/...` before issuing a token.
 
+### Email (Resend)
+
+- All templates live in `lib/emails.ts` (shared inline-styled `layout()`; email clients ignore CSS variables, so brand colors are literal hex there). `lib/resend.ts` holds the client and `EMAIL_FROM`.
+- Auth emails (verification, password reset, welcome) are wired in `lib/auth.ts`. Welcome fires once: from `afterEmailVerification` for email sign-ups, from `databaseHooks.user.create.after` for already-verified OAuth users.
+- Everything else is sent from server actions via `sendInBackground(() => ...)`, which uses Next's `after()` so the email never delays or fails the action. Escape any user-written text with the helpers in `lib/emails.ts`.
+- Status-change emails (application approve/reject, admin listing changes) only send when a conditional `updateMany` actually changed a row (`count > 0`), so repeat clicks don't re-email.
+- "New message" emails are throttled in `notifyRecipientByEmail` (`app/messages/actions.ts`): only the first unread message, skipped if the recipient was active in the thread in the last 10 minutes, and skipped if `Profile.messageEmailNotifications` is off (toggle in `/dashboard/profile#notifications`).
+
+### Sign-in return paths
+
+- Send signed-out users to sign in with `signInPath(next)` / `signInWithIntentPath(path, intent)` from `lib/terms.ts`, not a bare `/account?signin=true`. `next` survives email sign-in, sign-up + verification link, Google, and `/accept-terms`.
+- `?intent=apply|enquiry|contact` on the return path makes `DialogIntentWatcher` (root layout) reopen that dialog once the user has a verified session. Add new intents to `DIALOG_INTENTS` + `INTENT_DIALOGS`.
+
 ### Real-time (Pusher)
 
 - Messaging uses Pusher Channels for live delivery — chosen over a persistent socket server since the app deploys to Vercel serverless. `lib/pusher.ts` is the server-side singleton (`pusherServer`, mirrors `lib/prisma.ts`'s pattern); `lib/pusher-client.ts` is the browser-side singleton (`getPusherClient()`), imported only from client components.
@@ -73,6 +86,7 @@ Next.js 16 App Router + React 19 + TypeScript, Tailwind CSS v4, Prisma 7 (driver
 - `components/` is organized by feature/section (`home/`, `experts/`, `dashboard/`, `dashboard/experts/`, `dashboard/profile/`, `common/`, `signin/`, `services/`), not by component type. There are sometimes two components with the same name for different contexts (e.g. `components/home/ExpertCard.tsx` vs `components/experts/ExpertCard.tsx` vs `components/dashboard/experts/ExpertCard.tsx`) — check the directory, not just the filename.
 - Data fetching happens in `async` server components close to where it's rendered (e.g. `components/experts/ExpertGrid.tsx`, `components/home/Experts.tsx` both call `prisma` directly); pages tend to be thin wrappers. Client components (`"use client"`) are kept small and pulled out just for the interactive slice (e.g. `SaveExpertButton`, `RemoveSavedExpertButton`) rather than making whole cards/pages client components.
 - Global providers are wired in `app/layout.tsx`: `RoleProvider` (from `contexts/RoleContext.tsx`, exposes the current user's `Profile.role` via `useRole()`) and `DialogProvider`/`DialogRenderer` (from `contexts/DialogContext.tsx` — a generic imperative dialog system: `openDialog(type, props)` pushes an entry that `DialogRenderer` looks up and mounts, `closeDialog(id)`/`closeAll()` remove it).
+- The floating site concierge (`components/concierge/Concierge.tsx`, mounted in `app/layout.tsx`) is rule-based, with no AI or external service: `askConcierge` (`components/concierge/actions.ts`, open to signed-out visitors — it only reads public data) answers from `faqs` plus the extra `CONCIERGE_FAQS` in `lib/concierge.ts`, or keyword-searches the public directory (`PUBLIC_EXPERT_WHERE`). Tune matching (synonyms, stopwords, `FAQ_ANSWER_THRESHOLD`) in `lib/concierge.ts`; a new FAQ in `constants/index.ts` is picked up automatically.
 - `constants/index.ts` holds shared nav link arrays (`links`, `dashBoardLinks`, `quickLinks`, `social`) and static content lists (`strats`, `prods`) — check here before hardcoding nav items elsewhere.
 
 ### Styling

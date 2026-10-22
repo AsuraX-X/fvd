@@ -1,6 +1,11 @@
 "use server";
 
 import { auth } from "@/lib/auth";
+import {
+  sendExpertListingChangedEmail,
+  sendExpertRevokedEmail,
+  sendInBackground,
+} from "@/lib/emails";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
@@ -29,6 +34,7 @@ export async function revokeExpert(
 
   const profile = await prisma.profile.findUnique({
     where: { id: profileId },
+    include: { user: { select: { email: true } } },
   });
 
   if (!profile) {
@@ -39,6 +45,15 @@ export async function revokeExpert(
     where: { id: profileId },
     data: { role: "USER" },
   });
+
+  if (profile.role === "EXPERT") {
+    sendInBackground(() =>
+      sendExpertRevokedEmail({
+        to: profile.user.email,
+        name: profile.firstName,
+      }),
+    );
+  }
 
   revalidatePath("/admin/experts");
   revalidatePath("/admin/overview");
@@ -105,6 +120,21 @@ export async function setExpertListing(
     }
 
     // Otherwise it was already in the requested state.
+  } else {
+    // Only on an actual transition, so repeat clicks don't re-email.
+    sendInBackground(async () => {
+      const expert = await prisma.profile.findUnique({
+        where: { id: profileId },
+        select: { firstName: true, user: { select: { email: true } } },
+      });
+      if (!expert) return;
+
+      await sendExpertListingChangedEmail({
+        to: expert.user.email,
+        name: expert.firstName,
+        listed,
+      });
+    });
   }
 
   revalidatePath("/");

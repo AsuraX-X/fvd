@@ -77,6 +77,9 @@ model Profile {
   rate          Int?
   role          Role          @default(USER)
   listingStatus ListingStatus @default(LISTED)
+  // Opt-out for "new message" emails (app/messages/actions.ts). Transactional
+  // emails (verification, password reset, application decisions) ignore it.
+  messageEmailNotifications Boolean @default(true)
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
 

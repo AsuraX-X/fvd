@@ -1,6 +1,11 @@
 "use server";
 
 import { auth } from "@/lib/auth";
+import {
+  sendApplicationApprovedEmail,
+  sendApplicationRejectedEmail,
+  sendInBackground,
+} from "@/lib/emails";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
@@ -50,10 +55,22 @@ export async function approveApplication(
     return { success: false, message: "Application not found." };
   }
 
-  await prisma.application.update({
-    where: { id: applicationId },
+  // Conditional on the current status so a double-click (or two admins at
+  // once) only emails the applicant on the first transition.
+  const { count } = await prisma.application.updateMany({
+    where: { id: applicationId, status: { not: "APPROVED" } },
     data: { status: "APPROVED" },
   });
+
+  if (count > 0) {
+    sendInBackground(() =>
+      sendApplicationApprovedEmail({
+        name: application.name,
+        email: application.email,
+        hasAccount: Boolean(application.userId),
+      }),
+    );
+  }
 
   if (application.userId) {
     const profile = await prisma.profile.findUnique({
@@ -95,10 +112,19 @@ export async function rejectApplication(
     return { success: false, message: "Application not found." };
   }
 
-  await prisma.application.update({
-    where: { id: applicationId },
+  const { count } = await prisma.application.updateMany({
+    where: { id: applicationId, status: { not: "REJECTED" } },
     data: { status: "REJECTED" },
   });
+
+  if (count > 0) {
+    sendInBackground(() =>
+      sendApplicationRejectedEmail({
+        name: application.name,
+        email: application.email,
+      }),
+    );
+  }
 
   revalidateApplicationPaths();
 

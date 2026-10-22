@@ -1,8 +1,10 @@
 import DangerZone from "@/components/dashboard/profile/DangerZone";
+import NotificationSettings from "@/components/dashboard/profile/NotificationSettings";
 import ProfileForm from "@/components/dashboard/profile/ProfileForm";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
+import { signInPath } from "@/lib/terms";
 import { redirect } from "next/navigation";
 
 export const metadata = { title: "Profile" };
@@ -11,7 +13,7 @@ const page = async () => {
   const session = await auth.api.getSession({ headers: await headers() });
 
   if (!session) {
-    redirect("/account?signin=true");
+    redirect(signInPath("/dashboard/profile"));
   }
 
   const profile = await prisma.profile.findUnique({
@@ -52,6 +54,9 @@ const page = async () => {
             imageUrl: project.imageUrl,
           })) ?? []
         }
+      />
+      <NotificationSettings
+        messageEmails={profile?.messageEmailNotifications ?? true}
       />
       <DangerZone
         role={profile?.role ?? "USER"}

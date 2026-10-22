@@ -12,7 +12,7 @@ import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { acceptTermsPath, hasAcceptedTerms } from "@/lib/terms";
+import { acceptTermsPath, hasAcceptedTerms, signInPath } from "@/lib/terms";
 
 export const metadata = {
   title: "Messages",
@@ -35,7 +35,8 @@ const page = async ({ params }: PageProps) => {
 
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session || !session.user.emailVerified) {
-    redirect("/account?signin=true");
+    // e.g. "Reply" from a new-message email while signed out lands back here.
+    redirect(signInPath(`/messages/${id}`));
   }
   if (!hasAcceptedTerms(session.user)) {
     redirect(acceptTermsPath(`/messages/${id}`));

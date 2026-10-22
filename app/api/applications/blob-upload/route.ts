@@ -1,5 +1,7 @@
+import { auth } from "@/lib/auth";
 import { APPLICATION_PORTFOLIO_MAX_BYTES } from "@/lib/upload-limits";
 import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
+import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 
 const ALLOWED_CONTENT_TYPES = [
@@ -20,6 +22,14 @@ export async function POST(request: Request) {
       body,
       request,
       onBeforeGenerateToken: async (pathname) => {
+        const session = await auth.api.getSession({
+          headers: await headers(),
+        });
+
+        if (!session || !session.user.emailVerified) {
+          throw new Error("You must be signed in to upload.");
+        }
+
         if (!pathname.startsWith("applications/")) {
           throw new Error("Invalid upload path.");
         }
